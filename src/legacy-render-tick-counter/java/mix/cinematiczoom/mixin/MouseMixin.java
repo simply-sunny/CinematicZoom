@@ -18,8 +18,19 @@ public abstract class MouseMixin {
     @Shadow @Final private MinecraftClient client;
     @Shadow public abstract boolean isCursorLocked();
     @Shadow private void updateMouse(double timeDelta) { throw new AssertionError(); }
+    @Shadow private double cursorDeltaX;
+    @Shadow private double cursorDeltaY;
 
     @Unique private double cinematiczoom$lastInertiaTime;
+
+    @Inject(method = "updateMouse(D)V", at = @At("HEAD"))
+    private void cinematiczoom$scaleSensitivity(double timeDelta, CallbackInfo ci) {
+        double sensMul = ZoomManager.getSensitivityMultiplier();
+        if (sensMul != 1.0) {
+            this.cursorDeltaX *= sensMul;
+            this.cursorDeltaY *= sensMul;
+        }
+    }
 
     @Inject(method = "onMouseScroll(JDD)V", at = @At("HEAD"), cancellable = true)
     private void cinematiczoom$onScroll(long window, double horizontal, double vertical, CallbackInfo ci) {

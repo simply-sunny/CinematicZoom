@@ -14,6 +14,7 @@ public final class CinematicZoomClient implements ClientModInitializer {
 
     private static final String MODID = "cinematiczoom";
     public static KeyBinding ZOOM_KEYBIND;
+    public static KeyBinding ZOOM_NO_BARS_KEYBIND;
 
     private static final KeyBinding.Category ZOOM_CATEGORY =
             KeyBinding.Category.create(Identifier.of(MODID, "main"));
@@ -28,8 +29,18 @@ public final class CinematicZoomClient implements ClientModInitializer {
                 GLFW.GLFW_KEY_C,
                 ZOOM_CATEGORY
         ));
+        ZOOM_NO_BARS_KEYBIND = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.cinematiczoom.zoom_no_bars",
+                InputUtil.Type.KEYSYM,
+                InputUtil.UNKNOWN_KEY.getCode(),
+                ZOOM_CATEGORY
+        ));
 
-        ClientTickEvents.END_CLIENT_TICK.register(client -> ZoomManager.tick(client, ZOOM_KEYBIND));
+        ClientTickEvents.END_CLIENT_TICK.register(client -> ZoomManager.tick(
+                client,
+                ZOOM_KEYBIND,
+                ZOOM_NO_BARS_KEYBIND
+        ));
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> ZoomManager.reset(client));
         ClientLifecycleEvents.CLIENT_STOPPING.register(ZoomManager::reset);
     }

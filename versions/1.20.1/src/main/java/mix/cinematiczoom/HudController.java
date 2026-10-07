@@ -8,8 +8,12 @@ final class HudController {
     private HudController() {
     }
 
+    static void setHidden(MinecraftClient client, boolean hideHud) {
+        hiddenByUs = hideHud;
+    }
+
     static void acquire(MinecraftClient client) {
-        hiddenByUs = ZoomConfig.INSTANCE.hideHudDuringZoom;
+        hiddenByUs = true;
     }
 
     static void release(MinecraftClient client) {

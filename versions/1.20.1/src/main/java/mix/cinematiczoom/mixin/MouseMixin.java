@@ -20,8 +20,19 @@ public abstract class MouseMixin {
     @Shadow public abstract boolean isCursorLocked();
     @Shadow @Final private SmoothUtil cursorXSmoother;
     @Shadow @Final private SmoothUtil cursorYSmoother;
+    @Shadow private double cursorDeltaX;
+    @Shadow private double cursorDeltaY;
 
     @Unique private double cinematiczoom$lastInertiaTime;
+
+    @Inject(method = "updateMouse()V", at = @At("HEAD"))
+    private void cinematiczoom$scaleSensitivity(CallbackInfo ci) {
+        double sensMul = ZoomManager.getSensitivityMultiplier();
+        if (sensMul != 1.0) {
+            this.cursorDeltaX *= sensMul;
+            this.cursorDeltaY *= sensMul;
+        }
+    }
 
     @Inject(method = "onMouseScroll(JDD)V", at = @At("HEAD"), cancellable = true)
     private void cinematiczoom$onScroll(long window, double horizontal, double vertical, CallbackInfo ci) {

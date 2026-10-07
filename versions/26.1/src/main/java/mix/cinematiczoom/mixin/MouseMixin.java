@@ -18,8 +18,19 @@ public abstract class MouseMixin {
     @Shadow @Final private Minecraft minecraft;
     @Shadow public abstract boolean isMouseGrabbed();
     @Shadow protected abstract void turnPlayer(double timeDelta);
+    @Shadow private double accumulatedDX;
+    @Shadow private double accumulatedDY;
 
     @Unique private double cinematiczoom$lastInertiaTime;
+
+    @Inject(method = "turnPlayer(D)V", at = @At("HEAD"))
+    private void cinematiczoom$scaleSensitivity(double timeDelta, CallbackInfo ci) {
+        double sensMul = ZoomManager.getSensitivityMultiplier();
+        if (sensMul != 1.0) {
+            this.accumulatedDX *= sensMul;
+            this.accumulatedDY *= sensMul;
+        }
+    }
 
     @Inject(method = "onScroll(JDD)V", at = @At("HEAD"), cancellable = true)
     private void cinematiczoom$onScroll(long window, double horizontal, double vertical, CallbackInfo ci) {

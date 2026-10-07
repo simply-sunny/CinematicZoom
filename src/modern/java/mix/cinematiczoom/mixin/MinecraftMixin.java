@@ -12,6 +12,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MinecraftMixin {
     @Inject(method = "tick", at = @At("TAIL"))
     private void cinematiczoom$onTick(CallbackInfo ci) {
-        ZoomManager.tick(Minecraft.getInstance(), CinematicZoomClient.ZOOM_KEYBIND);
+        ZoomManager.tick(
+                Minecraft.getInstance(),
+                CinematicZoomClient.ZOOM_KEYBIND,
+                CinematicZoomClient.ZOOM_NO_BARS_KEYBIND
+        );
     }
 }

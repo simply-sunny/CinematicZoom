@@ -11,23 +11,39 @@ public final class CinematicZoomClient implements ClientModInitializer {
 
     private static final String MODID = "cinematiczoom";
     public static ZoomKeyMapping ZOOM_KEYBIND;
+    public static ZoomKeyMapping ZOOM_NO_BARS_KEYBIND;
 
     public static ZoomKeyMapping getKeyMapping() {
+        getKeyMappings();
+        return ZOOM_KEYBIND;
+    }
+
+    public static ZoomKeyMapping[] getKeyMappings() {
         if (ZOOM_KEYBIND == null) {
+            KeyMapping.Category category = KeyMapping.Category.register(Identifier.parse(MODID + ":cinematiczoom"));
             ZOOM_KEYBIND = new ZoomKeyMapping(
                     "key.cinematiczoom.zoom",
                     InputConstants.Type.KEYBOARD,
                     InputConstants.KEY_C,
-                    KeyMapping.Category.register(Identifier.parse(MODID + ":cinematiczoom"))
+                    category
+            );
+            ZOOM_NO_BARS_KEYBIND = new ZoomKeyMapping(
+                    "key.cinematiczoom.zoom_no_bars",
+                    InputConstants.Type.KEYBOARD,
+                    InputConstants.UNKNOWN.getValue(),
+                    category
             );
         }
-        return ZOOM_KEYBIND;
+        return new ZoomKeyMapping[] {
+                ZOOM_KEYBIND,
+                ZOOM_NO_BARS_KEYBIND
+        };
     }
 
     @Override
     public void onInitializeClient() {
         ZoomConfig.INSTANCE.load();
-        getKeyMapping();
+        getKeyMappings();
 
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> ZoomManager.reset(client));
         ClientLifecycleEvents.CLIENT_STOPPING.register(ZoomManager::reset);
