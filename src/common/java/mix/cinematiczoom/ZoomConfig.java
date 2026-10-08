@@ -30,6 +30,7 @@ public final class ZoomConfig {
     public boolean cinematicHideHud = true;
     public boolean cinematicCamera = true;
     public boolean cinematicScaleSensitivity = true;
+    public boolean cinematicRemoveBobbing = true;
     public boolean cinematicToggle = false;
 
     // Regular Zoom Profile (No Bars)
@@ -41,6 +42,7 @@ public final class ZoomConfig {
     public boolean regularHideHud = false;
     public boolean regularCinematicCamera = false;
     public boolean regularScaleSensitivity = true;
+    public boolean regularRemoveBobbing = true;
     public boolean regularToggle = false;
 
     // Shared / Wheel Settings
@@ -161,6 +163,7 @@ public final class ZoomConfig {
         cinematicHideHud = other.cinematicHideHud;
         cinematicCamera = other.cinematicCamera;
         cinematicScaleSensitivity = other.cinematicScaleSensitivity;
+        cinematicRemoveBobbing = other.cinematicRemoveBobbing;
         cinematicToggle = other.cinematicToggle;
 
         regularStartingZoom = other.regularStartingZoom;
@@ -171,6 +174,7 @@ public final class ZoomConfig {
         regularHideHud = other.regularHideHud;
         regularCinematicCamera = other.regularCinematicCamera;
         regularScaleSensitivity = other.regularScaleSensitivity;
+        regularRemoveBobbing = other.regularRemoveBobbing;
         regularToggle = other.regularToggle;
 
         mouseWheelEnabled = other.mouseWheelEnabled;

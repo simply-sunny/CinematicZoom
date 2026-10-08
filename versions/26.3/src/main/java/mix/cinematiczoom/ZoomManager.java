@@ -141,6 +141,17 @@ public final class ZoomManager {
         return shouldScale ? ZOOM.currentMultiplier() : 1.0;
     }
 
+    public static boolean shouldRemoveBobbing() {
+        if (!ZOOM.isActive()) {
+            return false;
+        }
+        ZoomConfig cfg = ZoomConfig.INSTANCE;
+        ZoomMode mode = ZOOM.getActiveMode();
+        return (mode == ZoomMode.REGULAR)
+                ? cfg.regularRemoveBobbing
+                : cfg.cinematicRemoveBobbing;
+    }
+
     public static boolean onWheel(double vertical) {
         return ZOOM.onWheel(vertical);
     }

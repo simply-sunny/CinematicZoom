@@ -99,6 +99,13 @@ public final class ModMenuIntegration implements ModMenuApi {
                   .build()
             );
 
+            cinematicCat.addEntry(
+                eb.startBooleanToggle(Component.translatable("cinematiczoom.option.remove_bobbing"), cfg.cinematicRemoveBobbing)
+                  .setTooltip(Component.translatable("cinematiczoom.option.remove_bobbing.tooltip"))
+                  .setSaveConsumer(v -> cfg.cinematicRemoveBobbing = v)
+                  .build()
+            );
+
             // 2. Regular Zoom Category
             ConfigCategory regularCat = builder.getOrCreateCategory(Component.translatable("cinematiczoom.config.category.regular"));
 
@@ -165,6 +172,13 @@ public final class ModMenuIntegration implements ModMenuApi {
                 eb.startBooleanToggle(Component.translatable("cinematiczoom.option.scale_sensitivity"), cfg.regularScaleSensitivity)
                   .setTooltip(Component.translatable("cinematiczoom.option.scale_sensitivity.tooltip"))
                   .setSaveConsumer(v -> cfg.regularScaleSensitivity = v)
+                  .build()
+            );
+
+            regularCat.addEntry(
+                eb.startBooleanToggle(Component.translatable("cinematiczoom.option.remove_bobbing"), cfg.regularRemoveBobbing)
+                  .setTooltip(Component.translatable("cinematiczoom.option.remove_bobbing.tooltip"))
+                  .setSaveConsumer(v -> cfg.regularRemoveBobbing = v)
                   .build()
             );
 
