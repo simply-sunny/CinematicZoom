@@ -142,11 +142,32 @@ final class ZoomController {
         }
 
         float prevTarget = heldMultiplier;
-        heldMultiplier = clamp(
-                heldMultiplier - (float) vertical * ZoomConfig.INSTANCE.wheelStep,
-                ZoomConfig.INSTANCE.minZoomMultiplier,
-                ZoomConfig.INSTANCE.maxZoomMultiplier
-        );
+        ZoomConfig cfg = ZoomConfig.INSTANCE;
+
+        if (cfg.discreteScroll) {
+            float currentZoom = heldMultiplier <= 0f ? 1.0f : 1.0f / heldMultiplier;
+            float step = Math.max(0.1f, cfg.discreteScrollStep);
+            float newZoom;
+            if (vertical > 0) {
+                int notches = (int) Math.round(vertical);
+                if (notches < 1) notches = 1;
+                newZoom = (float) (Math.floor(currentZoom / step + 1e-4) + notches) * step;
+            } else {
+                int notches = (int) Math.round(-vertical);
+                if (notches < 1) notches = 1;
+                newZoom = (float) (Math.ceil(currentZoom / step - 1e-4) - notches) * step;
+            }
+            float minZoom = 1.0f / cfg.maxZoomMultiplier;
+            float maxZoom = 1.0f / cfg.minZoomMultiplier;
+            newZoom = clamp(newZoom, minZoom, maxZoom);
+            heldMultiplier = 1.0f / newZoom;
+        } else {
+            heldMultiplier = clamp(
+                    heldMultiplier - (float) vertical * cfg.wheelStep,
+                    cfg.minZoomMultiplier,
+                    cfg.maxZoomMultiplier
+            );
+        }
         targetMultiplier = heldMultiplier;
 
         if (targetMultiplier != prevTarget) {

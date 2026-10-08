@@ -73,7 +73,7 @@ Per-version build output is also available under `versions/<minecraft-version>/b
 - Proportional mouse sensitivity scaling during zoom for precise aim and control.
 - Configurable zoom in and zoom out animation speeds and easing curves.
 - Configurable animated black bars.
-- Optional mouse-wheel zoom adjustment.
+- Optional mouse-wheel zoom adjustment (with optional discrete/linear magnification stepping).
 - Optional HUD/crosshair hiding.
 - Optional cinematic camera while zooming.
 - English and Russian translations.

@@ -45,6 +45,8 @@ public final class ZoomConfig {
 
     // Shared / Wheel Settings
     public boolean mouseWheelEnabled = true;
+    public boolean discreteScroll = false;
+    public float discreteScrollStep = 1.0f;
     public float minZoomMultiplier = 0.05f;
     public float maxZoomMultiplier = 1.00f;
     public float wheelStep = 0.05f;
@@ -145,6 +147,7 @@ public final class ZoomConfig {
         cinematicStartingZoom = Math.max(minStarting, Math.min(maxStarting, cinematicStartingZoom));
         regularStartingZoom = Math.max(minStarting, Math.min(maxStarting, regularStartingZoom));
 
+        discreteScrollStep = Math.max(0.1f, Math.min(5.0f, discreteScrollStep));
         wheelStep = Math.max(0.01f, Math.min(0.25f, wheelStep));
     }
 
@@ -171,6 +174,8 @@ public final class ZoomConfig {
         regularToggle = other.regularToggle;
 
         mouseWheelEnabled = other.mouseWheelEnabled;
+        discreteScroll = other.discreteScroll;
+        discreteScrollStep = other.discreteScrollStep;
         minZoomMultiplier = other.minZoomMultiplier;
         maxZoomMultiplier = other.maxZoomMultiplier;
         wheelStep = other.wheelStep;
