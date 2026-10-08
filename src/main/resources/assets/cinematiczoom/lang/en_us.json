@@ -22,6 +22,9 @@
   "cinematiczoom.option.scale_sensitivity": "Scale mouse sensitivity",
   "cinematiczoom.option.scale_sensitivity.tooltip": "Scale down mouse sensitivity proportionally with zoom level so the view remains smooth and easy to control.",
 
+  "cinematiczoom.option.remove_bobbing": "Remove view bobbing while zooming",
+  "cinematiczoom.option.remove_bobbing.tooltip": "Disables screen bobbing while moving so the view remains steady during zoom.",
+
   "cinematiczoom.option.bars_percent": "Black bars height, %",
   "cinematiczoom.option.bars_percent.tooltip": "Percent of screen height for each bar (top and bottom). 0–50%.",
 

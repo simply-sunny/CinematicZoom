@@ -1,12 +1,10 @@
 package mix.cinematiczoom.mixin;
 
 import mix.cinematiczoom.ZoomManager;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.GameRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(GameRenderer.class)
@@ -17,11 +15,5 @@ public class GameRendererMixin {
         if (ZoomManager.isZoomActive() && ZoomManager.shouldRemoveBobbing()) {
             ci.cancel();
         }
-    }
-
-    @ModifyVariable(method = "extractGui(Lnet/minecraft/client/DeltaTracker;ZZ)V", at = @At("STORE"), ordinal = 0)
-    private GuiGraphicsExtractor cinematiczoom$drawBarsFirst(GuiGraphicsExtractor ctx) {
-        ZoomManager.renderBars(ctx);
-        return ctx;
     }
 }

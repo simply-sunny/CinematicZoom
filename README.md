@@ -71,6 +71,7 @@ Per-version build output is also available under `versions/<minecraft-version>/b
 - Separate rebindable keybindings for zooming with bars and zooming without bars (with hold and toggle support) in Minecraft Controls settings.
 - Configurable starting zoom from 1× to 30×; 1× shows the cinematic bars without magnification.
 - Proportional mouse sensitivity scaling during zoom for precise aim and control.
+- View bobbing removal while zooming to eliminate screen shake when moving.
 - Configurable zoom in and zoom out animation speeds and easing curves.
 - Configurable animated black bars.
 - Optional mouse-wheel zoom adjustment (with optional discrete/linear magnification stepping).
