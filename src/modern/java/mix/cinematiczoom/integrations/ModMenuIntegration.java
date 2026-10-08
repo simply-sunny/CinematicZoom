@@ -178,6 +178,21 @@ public final class ModMenuIntegration implements ModMenuApi {
                   .build()
             );
 
+            generalCat.addEntry(
+                eb.startBooleanToggle(Component.translatable("cinematiczoom.option.discrete_scroll"), cfg.discreteScroll)
+                  .setTooltip(Component.translatable("cinematiczoom.option.discrete_scroll.tooltip"))
+                  .setSaveConsumer(v -> cfg.discreteScroll = v)
+                  .build()
+            );
+
+            generalCat.addEntry(
+                eb.startFloatField(Component.translatable("cinematiczoom.option.discrete_scroll_step"), cfg.discreteScrollStep)
+                  .setMin(0.1f).setMax(5.0f)
+                  .setTooltip(Component.translatable("cinematiczoom.option.discrete_scroll_step.tooltip"))
+                  .setSaveConsumer(v -> cfg.discreteScrollStep = v)
+                  .build()
+            );
+
             return builder.build();
         };
     }

@@ -40,6 +40,12 @@
   "cinematiczoom.option.mouse_wheel_enabled": "Mouse wheel during zoom",
   "cinematiczoom.option.mouse_wheel_enabled.tooltip": "Allow adjusting zoom level with the mouse wheel while holding either zoom key.",
 
+  "cinematiczoom.option.discrete_scroll": "Discrete mouse wheel zoom",
+  "cinematiczoom.option.discrete_scroll.tooltip": "Steps zoom level by uniform magnification increments (e.g. +1× per notch) so scrolling feels linear and predictable.",
+
+  "cinematiczoom.option.discrete_scroll_step": "Discrete zoom step (×)",
+  "cinematiczoom.option.discrete_scroll_step.tooltip": "Magnification amount to add or subtract with each scroll wheel notch when discrete scrolling is enabled.",
+
   "cinematiczoom.option.hide_hud": "Hide HUD/crosshair while zooming",
   "cinematiczoom.option.hide_hud.tooltip": "Temporarily enables F1-like mode to hide HUD and crosshair during zoom.",
 
