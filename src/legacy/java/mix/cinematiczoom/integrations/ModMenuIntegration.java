@@ -27,7 +27,7 @@ public final class ModMenuIntegration implements ModMenuApi {
 
             cinematicCat.addEntry(
                 eb.startFloatField(Text.translatable("cinematiczoom.option.cinematic_starting_zoom"), cfg.cinematicStartingZoom)
-                  .setMin(1f).setMax(20f)
+                  .setMin(1f).setMax(30f)
                   .setTooltip(Text.translatable("cinematiczoom.option.cinematic_starting_zoom.tooltip"))
                   .setSaveConsumer(v -> cfg.cinematicStartingZoom = v)
                   .build()
@@ -104,7 +104,7 @@ public final class ModMenuIntegration implements ModMenuApi {
 
             regularCat.addEntry(
                 eb.startFloatField(Text.translatable("cinematiczoom.option.regular_starting_zoom"), cfg.regularStartingZoom)
-                  .setMin(1f).setMax(20f)
+                  .setMin(1f).setMax(30f)
                   .setTooltip(Text.translatable("cinematiczoom.option.regular_starting_zoom.tooltip"))
                   .setSaveConsumer(v -> cfg.regularStartingZoom = v)
                   .build()

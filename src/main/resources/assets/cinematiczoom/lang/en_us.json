@@ -13,10 +13,10 @@
   "cinematiczoom.config.category.regular": "Regular Zoom",
   "cinematiczoom.config.category.general": "General & Wheel",
 
-  "cinematiczoom.option.cinematic_starting_zoom": "Starting zoom (1–20×)",
+  "cinematiczoom.option.cinematic_starting_zoom": "Starting zoom (1–30×)",
   "cinematiczoom.option.cinematic_starting_zoom.tooltip": "Magnification applied when cinematic zoom starts. 1× shows black bars without zoom.",
 
-  "cinematiczoom.option.regular_starting_zoom": "Starting zoom (1–20×)",
+  "cinematiczoom.option.regular_starting_zoom": "Starting zoom (1–30×)",
   "cinematiczoom.option.regular_starting_zoom.tooltip": "Magnification applied when regular zoom starts.",
 
   "cinematiczoom.option.scale_sensitivity": "Scale mouse sensitivity",
