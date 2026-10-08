@@ -37,7 +37,7 @@ final class ZoomController {
             lastActiveMode = mode;
         }
 
-        if (starting || (mode.isActive() && modeChanged)) {
+        if (starting) {
             heldMultiplier = startingMultiplier(mode);
         }
 
