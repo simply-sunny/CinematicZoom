@@ -47,7 +47,7 @@ public final class ZoomConfig {
     public boolean mouseWheelEnabled = true;
     public boolean discreteScroll = false;
     public float discreteScrollStep = 1.0f;
-    public float minZoomMultiplier = 0.05f;
+    public float minZoomMultiplier = 1.0f / 30.0f;
     public float maxZoomMultiplier = 1.00f;
     public float wheelStep = 0.05f;
 
@@ -138,8 +138,8 @@ public final class ZoomConfig {
         if (regularZoomInCurve == null) regularZoomInCurve = ZoomCurve.EXPONENTIAL;
         if (regularZoomOutCurve == null) regularZoomOutCurve = ZoomCurve.EXPONENTIAL;
 
-        maxZoomMultiplier = Math.max(0.05f, Math.min(1.0f, maxZoomMultiplier));
-        minZoomMultiplier = Math.max(0.05f, Math.min(maxZoomMultiplier, minZoomMultiplier));
+        maxZoomMultiplier = Math.max(0.01f, Math.min(1.0f, maxZoomMultiplier));
+        minZoomMultiplier = Math.max(0.01f, Math.min(maxZoomMultiplier, minZoomMultiplier));
 
         float minStarting = 1.0f / maxZoomMultiplier;
         float maxStarting = 1.0f / minZoomMultiplier;
