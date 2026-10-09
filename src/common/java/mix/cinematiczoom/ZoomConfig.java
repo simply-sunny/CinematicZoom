@@ -63,7 +63,12 @@ public final class ZoomConfig {
             JsonObject json = GSON.fromJson(reader, JsonObject.class);
             ZoomConfig loaded = GSON.fromJson(json, ZoomConfig.class);
             if (loaded != null) {
-                // Migration for legacy configs
+                // Expand only the old default range; keep custom and new-profile limits.
+                if (!json.has("cinematicStartingZoom") && !json.has("regularStartingZoom")
+                        && (json.has("startingZoom") || json.has("baseZoomMultiplier") || json.has("smoothMs"))
+                        && loaded.minZoomMultiplier == 0.10f) {
+                    loaded.minZoomMultiplier = 1.0f / 30.0f;
+                }
                 if (!json.has("cinematicStartingZoom")) {
                     if (json.has("startingZoom")) {
                         loaded.cinematicStartingZoom = json.get("startingZoom").getAsFloat();

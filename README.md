@@ -51,6 +51,11 @@ Build only one target when developing:
 
 Per-version build output is also available under `versions/<minecraft-version>/build/libs/`.
 
+Run the headless regression checks with `./gradlew test`. They exercise the real
+zoom state, config migration, and wheel logic with stubbed Minecraft/Fabric APIs;
+they do not launch the game or validate runtime mixin application. `buildAll` also
+runs these checks.
+
 ## Project layout
 
 - `src/common` — Java code shared by every target.
@@ -62,6 +67,7 @@ Per-version build output is also available under `versions/<minecraft-version>/b
 - `src/legacy-render-tick-counter` — HUD render API used by `1.21.x`.
 - `src/modern` — shared unobfuscated API code for Minecraft `26.x`.
 - `src/modern-pre-26.3` and `src/modern-26.3` — version-specific key input APIs.
+- `src/modern-post-26.1` — zoom manager shared by Minecraft `26.2` and `26.3`.
 - `versions/<version>` — metadata and Java classes for each exact or range build target.
 - `build.gradle` — the single version/dependency matrix and all build configuration.
 
@@ -69,7 +75,7 @@ Per-version build output is also available under `versions/<minecraft-version>/b
 
 - Hold-to-zoom (default key: `C`, rebindable).
 - Separate rebindable keybindings for zooming with bars and zooming without bars (with hold and toggle support) in Minecraft Controls settings.
-- Configurable starting zoom from 1× to 30×; 1× shows the cinematic bars without magnification.
+- Configurable starting zoom from 1× to 30× by default; 1× shows the cinematic bars without magnification. Custom config limits are respected by the settings screen.
 - Proportional mouse sensitivity scaling during zoom for precise aim and control.
 - View bobbing removal while zooming to eliminate screen shake when moving.
 - Configurable zoom in and zoom out animation speeds and easing curves.

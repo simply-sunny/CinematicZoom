@@ -14,11 +14,6 @@ public final class CinematicZoomClient implements ClientModInitializer {
     public static ZoomKeyMapping ZOOM_KEYBIND;
     public static ZoomKeyMapping ZOOM_NO_BARS_KEYBIND;
 
-    public static ZoomKeyMapping getKeyMapping() {
-        getKeyMappings();
-        return ZOOM_KEYBIND;
-    }
-
     public static ZoomKeyMapping[] getKeyMappings() {
         if (ZOOM_KEYBIND == null) {
             KeyMapping.Category category = KeyMapping.Category.register(Identifier.parse(MODID + ":cinematiczoom"));

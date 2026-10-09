@@ -18,20 +18,8 @@ final class ZoomController {
 
     private long lastFrameNanos;
 
-    boolean update(boolean shouldZoom) {
-        return update(shouldZoom ? ZoomMode.CINEMATIC : ZoomMode.NONE);
-    }
-
-    boolean update(boolean shouldZoom, boolean showBars) {
-        if (!shouldZoom) {
-            return update(ZoomMode.NONE);
-        }
-        return update(showBars ? ZoomMode.CINEMATIC : ZoomMode.REGULAR);
-    }
-
-    boolean update(ZoomMode mode) {
+    void update(ZoomMode mode) {
         boolean starting = mode.isActive() && !activeMode.isActive();
-        boolean modeChanged = mode != activeMode;
 
         if (mode.isActive()) {
             lastActiveMode = mode;
@@ -60,8 +48,6 @@ final class ZoomController {
         if (targetMultiplier != prevTargetMultiplier || targetBarsPercent != prevTargetBars) {
             startAnimation(mode.isActive());
         }
-
-        return starting;
     }
 
     void reset() {
@@ -121,9 +107,7 @@ final class ZoomController {
         animElapsedMs = 0.0;
 
         ZoomConfig cfg = ZoomConfig.INSTANCE;
-        ZoomMode profileMode = activeMode.isActive() ? activeMode : lastActiveMode;
-
-        if (profileMode == ZoomMode.REGULAR) {
+        if (lastActiveMode == ZoomMode.REGULAR) {
             animDurationMs = zoomingIn ? cfg.regularZoomInMs : cfg.regularZoomOutMs;
             animCurve = zoomingIn ? cfg.regularZoomInCurve : cfg.regularZoomOutCurve;
         } else {
@@ -180,8 +164,21 @@ final class ZoomController {
         return currentMultiplier;
     }
 
-    ZoomMode getActiveMode() {
-        return activeMode;
+    double getSensitivityMultiplier() {
+        if (!isActive()) return 1.0;
+        ZoomConfig cfg = ZoomConfig.INSTANCE;
+        boolean scale = lastActiveMode == ZoomMode.REGULAR
+                ? cfg.regularScaleSensitivity
+                : cfg.cinematicScaleSensitivity;
+        return scale ? currentMultiplier : 1.0;
+    }
+
+    boolean shouldRemoveBobbing() {
+        if (!isActive()) return false;
+        ZoomConfig cfg = ZoomConfig.INSTANCE;
+        return lastActiveMode == ZoomMode.REGULAR
+                ? cfg.regularRemoveBobbing
+                : cfg.cinematicRemoveBobbing;
     }
 
     boolean isActive() {

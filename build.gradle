@@ -155,6 +155,9 @@ subprojects {
 		}
 	} else {
 		javaDirectories << rootProject.file('src/modern/java')
+		if (target.minecraft in ['26.2', '26.3']) {
+			javaDirectories << rootProject.file('src/modern-post-26.1/java')
+		}
 		javaDirectories << rootProject.file(target.minecraft == '26.3' ? 'src/modern-26.3/java' : 'src/modern-pre-26.3/java')
 	}
 
@@ -201,7 +204,33 @@ subprojects {
 	}
 }
 
+// Headless checks use real common/manager code and only stub the game/loader boundary.
+def regressionProject = subprojects.first()
+def compileRegressionTests = regressionProject.tasks.register('compileRegressionTests', JavaCompile) {
+	source rootProject.file('src/common/java'), rootProject.file('tests/java'), rootProject.file('src/modern-post-26.1/java/mix/cinematiczoom/ZoomManager.java')
+	classpath = regressionProject.configurations.compileClasspath
+	destinationDirectory = rootProject.layout.buildDirectory.dir('classes/regression')
+	options.release = 17
+}
+
+def regressionTest = regressionProject.tasks.register('regressionTest', JavaExec) {
+	dependsOn compileRegressionTests
+	classpath = files(compileRegressionTests.flatMap { it.destinationDirectory }) + regressionProject.configurations.compileClasspath
+	mainClass = 'mix.cinematiczoom.ZoomRegressionTest'
+	workingDir = rootProject.layout.buildDirectory.get().asFile
+	systemProperty 'cinematiczoom.testConfig', rootProject.layout.buildDirectory.dir('test-config').get().asFile.absolutePath
+}
+
+tasks.register('test') {
+	dependsOn regressionTest
+}
+
+tasks.named('check') {
+	dependsOn regressionTest
+}
+
 tasks.register('buildAll', Sync) {
+	dependsOn regressionTest
 	group = 'build'
 	description = 'Builds every supported Minecraft version and collects the release JARs.'
 

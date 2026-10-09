@@ -11,17 +11,10 @@ public final class ZoomManager {
     private static final ZoomController ZOOM = new ZoomController();
 
     private static boolean smoothCameraForcedByUs;
-    private static boolean cinematicToggled;
-    private static boolean regularToggled;
-    private static boolean wasCinematicDown;
-    private static boolean wasRegularDown;
+    private static final ZoomInputState INPUT = new ZoomInputState();
     private static ZoomMode currentAppliedMode = ZoomMode.NONE;
 
     private ZoomManager() {
-    }
-
-    public static void tick(MinecraftClient client, KeyBinding key) {
-        tick(client, key, null);
     }
 
     public static void tick(MinecraftClient client, KeyBinding cinematicKey, KeyBinding regularKey) {
@@ -33,39 +26,7 @@ public final class ZoomManager {
         boolean isCinematicDown = canInteract && isZoomKeyPressed(client, cinematicKey);
         boolean isRegularDown = canInteract && isZoomKeyPressed(client, regularKey);
 
-        if (!inWorld) {
-            cinematicToggled = false;
-            regularToggled = false;
-        }
-
-        ZoomConfig cfg = ZoomConfig.INSTANCE;
-
-        if (cfg.cinematicToggle && isCinematicDown && !wasCinematicDown) {
-            cinematicToggled = !cinematicToggled;
-            if (cinematicToggled) {
-                regularToggled = false;
-            }
-        }
-        if (cfg.regularToggle && isRegularDown && !wasRegularDown) {
-            regularToggled = !regularToggled;
-            if (regularToggled) {
-                cinematicToggled = false;
-            }
-        }
-
-        ZoomMode desiredMode = ZoomMode.NONE;
-        if (cinematicToggled && inWorld) {
-            desiredMode = ZoomMode.CINEMATIC;
-        } else if (regularToggled && inWorld) {
-            desiredMode = ZoomMode.REGULAR;
-        } else if (!cfg.cinematicToggle && isCinematicDown) {
-            desiredMode = canInteract ? ZoomMode.CINEMATIC : ZoomMode.NONE;
-        } else if (!cfg.regularToggle && isRegularDown) {
-            desiredMode = canInteract ? ZoomMode.REGULAR : ZoomMode.NONE;
-        }
-
-        wasCinematicDown = isCinematicDown;
-        wasRegularDown = isRegularDown;
+        ZoomMode desiredMode = INPUT.update(inWorld, isCinematicDown, isRegularDown);
 
         ZOOM.update(desiredMode);
 
@@ -120,10 +81,7 @@ public final class ZoomManager {
     }
 
     public static void reset(MinecraftClient client) {
-        cinematicToggled = false;
-        regularToggled = false;
-        wasCinematicDown = false;
-        wasRegularDown = false;
+        INPUT.reset();
         applyOverrides(client, ZoomMode.NONE);
         currentAppliedMode = ZoomMode.NONE;
         ZOOM.reset();
@@ -142,26 +100,11 @@ public final class ZoomManager {
     }
 
     public static double getSensitivityMultiplier() {
-        if (!ZOOM.isActive()) {
-            return 1.0;
-        }
-        ZoomConfig cfg = ZoomConfig.INSTANCE;
-        ZoomMode mode = ZOOM.getActiveMode();
-        boolean shouldScale = (mode == ZoomMode.REGULAR)
-                ? cfg.regularScaleSensitivity
-                : cfg.cinematicScaleSensitivity;
-        return shouldScale ? ZOOM.currentMultiplier() : 1.0;
+        return ZOOM.getSensitivityMultiplier();
     }
 
     public static boolean shouldRemoveBobbing() {
-        if (!ZOOM.isActive()) {
-            return false;
-        }
-        ZoomConfig cfg = ZoomConfig.INSTANCE;
-        ZoomMode mode = ZOOM.getActiveMode();
-        return (mode == ZoomMode.REGULAR)
-                ? cfg.regularRemoveBobbing
-                : cfg.cinematicRemoveBobbing;
+        return ZOOM.shouldRemoveBobbing();
     }
 
     public static boolean onWheel(double vertical) {

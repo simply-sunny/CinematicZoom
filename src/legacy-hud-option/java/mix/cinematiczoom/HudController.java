@@ -20,14 +20,6 @@ final class HudController {
         }
     }
 
-    static void acquire(MinecraftClient client) {
-        setHidden(client, true);
-    }
-
-    static void release(MinecraftClient client) {
-        setHidden(client, false);
-    }
-
     static boolean shouldHideHud() {
         return false;
     }

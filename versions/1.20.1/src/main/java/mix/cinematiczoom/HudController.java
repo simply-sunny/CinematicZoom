@@ -12,14 +12,6 @@ final class HudController {
         hiddenByUs = hideHud;
     }
 
-    static void acquire(MinecraftClient client) {
-        hiddenByUs = true;
-    }
-
-    static void release(MinecraftClient client) {
-        hiddenByUs = false;
-    }
-
     static boolean shouldHideHud() {
         return hiddenByUs;
     }
