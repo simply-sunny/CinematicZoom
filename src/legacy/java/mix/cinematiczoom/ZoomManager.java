@@ -11,40 +11,87 @@ public final class ZoomManager {
     private static final ZoomController ZOOM = new ZoomController();
 
     private static boolean smoothCameraForcedByUs;
-    private static boolean toggled;
-    private static boolean wasKeyDown;
+    private static boolean cinematicToggled;
+    private static boolean regularToggled;
+    private static boolean wasCinematicDown;
+    private static boolean wasRegularDown;
+    private static ZoomMode currentAppliedMode = ZoomMode.NONE;
 
     private ZoomManager() {
     }
 
     public static void tick(MinecraftClient client, KeyBinding key) {
+        tick(client, key, null);
+    }
+
+    public static void tick(MinecraftClient client, KeyBinding cinematicKey, KeyBinding regularKey) {
         boolean inWorld = client.world != null && client.player != null;
         boolean canInteract = inWorld
                 && client.currentScreen == null
                 && client.isWindowFocused();
 
-        boolean isKeyDown = canInteract && isZoomKeyPressed(client, key);
-        boolean wantZoom;
+        boolean isCinematicDown = canInteract && isZoomKeyPressed(client, cinematicKey);
+        boolean isRegularDown = canInteract && isZoomKeyPressed(client, regularKey);
 
-        if (ZoomConfig.INSTANCE.toggleMode) {
-            if (isKeyDown && !wasKeyDown) {
-                toggled = !toggled;
-            }
-            if (!inWorld) {
-                toggled = false;
-            }
-            wantZoom = toggled && inWorld;
-        } else {
-            toggled = false;
-            wantZoom = isKeyDown && canInteract;
+        if (!inWorld) {
+            cinematicToggled = false;
+            regularToggled = false;
         }
-        wasKeyDown = isKeyDown;
 
-        if (ZOOM.update(wantZoom)) {
-            acquireOverrides(client);
+        ZoomConfig cfg = ZoomConfig.INSTANCE;
+
+        if (cfg.cinematicToggle && isCinematicDown && !wasCinematicDown) {
+            cinematicToggled = !cinematicToggled;
+            if (cinematicToggled) {
+                regularToggled = false;
+            }
         }
-        if (!wantZoom) {
-            releaseOverrides(client);
+        if (cfg.regularToggle && isRegularDown && !wasRegularDown) {
+            regularToggled = !regularToggled;
+            if (regularToggled) {
+                cinematicToggled = false;
+            }
+        }
+
+        ZoomMode desiredMode = ZoomMode.NONE;
+        if (cinematicToggled && inWorld) {
+            desiredMode = ZoomMode.CINEMATIC;
+        } else if (regularToggled && inWorld) {
+            desiredMode = ZoomMode.REGULAR;
+        } else if (!cfg.cinematicToggle && isCinematicDown) {
+            desiredMode = canInteract ? ZoomMode.CINEMATIC : ZoomMode.NONE;
+        } else if (!cfg.regularToggle && isRegularDown) {
+            desiredMode = canInteract ? ZoomMode.REGULAR : ZoomMode.NONE;
+        }
+
+        wasCinematicDown = isCinematicDown;
+        wasRegularDown = isRegularDown;
+
+        ZOOM.update(desiredMode);
+
+        if (desiredMode != currentAppliedMode) {
+            applyOverrides(client, desiredMode);
+            currentAppliedMode = desiredMode;
+        }
+    }
+
+    private static void applyOverrides(MinecraftClient client, ZoomMode mode) {
+        ZoomConfig cfg = ZoomConfig.INSTANCE;
+        boolean wantHideHud = (mode == ZoomMode.CINEMATIC && cfg.cinematicHideHud)
+                || (mode == ZoomMode.REGULAR && cfg.regularHideHud);
+        boolean wantSmoothCam = (mode == ZoomMode.CINEMATIC && cfg.cinematicCamera)
+                || (mode == ZoomMode.REGULAR && cfg.regularCinematicCamera);
+
+        HudController.setHidden(client, wantHideHud);
+
+        if (wantSmoothCam) {
+            if (!client.options.smoothCameraEnabled) {
+                client.options.smoothCameraEnabled = true;
+                smoothCameraForcedByUs = true;
+            }
+        } else if (smoothCameraForcedByUs) {
+            client.options.smoothCameraEnabled = false;
+            smoothCameraForcedByUs = false;
         }
     }
 
@@ -73,9 +120,12 @@ public final class ZoomManager {
     }
 
     public static void reset(MinecraftClient client) {
-        toggled = false;
-        wasKeyDown = false;
-        releaseOverrides(client);
+        cinematicToggled = false;
+        regularToggled = false;
+        wasCinematicDown = false;
+        wasRegularDown = false;
+        applyOverrides(client, ZoomMode.NONE);
+        currentAppliedMode = ZoomMode.NONE;
         ZOOM.reset();
     }
 
@@ -89,6 +139,18 @@ public final class ZoomManager {
 
     public static boolean isZoomActive() {
         return ZOOM.isActive();
+    }
+
+    public static double getSensitivityMultiplier() {
+        if (!ZOOM.isActive()) {
+            return 1.0;
+        }
+        ZoomConfig cfg = ZoomConfig.INSTANCE;
+        ZoomMode mode = ZOOM.getActiveMode();
+        boolean shouldScale = (mode == ZoomMode.REGULAR)
+                ? cfg.regularScaleSensitivity
+                : cfg.cinematicScaleSensitivity;
+        return shouldScale ? ZOOM.currentMultiplier() : 1.0;
     }
 
     public static boolean onWheel(double vertical) {
@@ -110,21 +172,5 @@ public final class ZoomManager {
 
         context.fill(0, 0, width, barHeight, 0xFF000000);
         context.fill(0, height - barHeight, width, height, 0xFF000000);
-    }
-
-    private static void acquireOverrides(MinecraftClient client) {
-        HudController.acquire(client);
-        if (ZoomConfig.INSTANCE.enableCinematicCamera && !client.options.smoothCameraEnabled) {
-            client.options.smoothCameraEnabled = true;
-            smoothCameraForcedByUs = true;
-        }
-    }
-
-    private static void releaseOverrides(MinecraftClient client) {
-        HudController.release(client);
-        if (smoothCameraForcedByUs) {
-            client.options.smoothCameraEnabled = false;
-            smoothCameraForcedByUs = false;
-        }
     }
 }

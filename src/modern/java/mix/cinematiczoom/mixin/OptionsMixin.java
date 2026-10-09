@@ -34,14 +34,19 @@ public class OptionsMixin {
         if (this.keyMappings == null) {
             return;
         }
-        KeyMapping zoomKey = CinematicZoomClient.getKeyMapping();
-        for (KeyMapping mapping : this.keyMappings) {
-            if (mapping == zoomKey) {
-                return;
+        for (KeyMapping zoomKey : CinematicZoomClient.getKeyMappings()) {
+            boolean found = false;
+            for (KeyMapping mapping : this.keyMappings) {
+                if (mapping == zoomKey) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                KeyMapping[] newMappings = Arrays.copyOf(this.keyMappings, this.keyMappings.length + 1);
+                newMappings[this.keyMappings.length] = zoomKey;
+                this.keyMappings = newMappings;
             }
         }
-        KeyMapping[] newMappings = Arrays.copyOf(this.keyMappings, this.keyMappings.length + 1);
-        newMappings[this.keyMappings.length] = zoomKey;
-        this.keyMappings = newMappings;
     }
 }

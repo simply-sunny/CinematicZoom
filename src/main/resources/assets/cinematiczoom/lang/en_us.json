@@ -1,5 +1,6 @@
 {
   "key.cinematiczoom.zoom": "Cinematic Zoom",
+  "key.cinematiczoom.zoom_no_bars": "Zoom (no bars)",
   "key.categories.cinematiczoom": "Cinematic Zoom",
   "key.category.cinematiczoom.main": "Cinematic Zoom",
   "key.category.cinematiczoom.cinematiczoom": "Cinematic Zoom",
@@ -7,21 +8,37 @@
   "modmenu.descriptionTranslation.cinematiczoom": "Smooth zoom with cinematic black bars and per-frame easing.",
   "modmenu.summaryTranslation.cinematiczoom": "Cinematic zoom with black bars.",
 
-
   "cinematiczoom.config.title": "Cinematic Zoom - Settings",
-  "cinematiczoom.config.category.general": "General",
+  "cinematiczoom.config.category.cinematic": "Cinematic Zoom",
+  "cinematiczoom.config.category.regular": "Regular Zoom",
+  "cinematiczoom.config.category.general": "General & Wheel",
 
-  "cinematiczoom.option.starting_zoom": "Starting zoom (1–10×)",
-  "cinematiczoom.option.starting_zoom.tooltip": "Zoom level applied when zoom starts. 1× keeps the normal view while still showing the black bars.",
+  "cinematiczoom.option.cinematic_starting_zoom": "Starting zoom (1–20×)",
+  "cinematiczoom.option.cinematic_starting_zoom.tooltip": "Magnification applied when cinematic zoom starts. 1× shows black bars without zoom.",
+
+  "cinematiczoom.option.regular_starting_zoom": "Starting zoom (1–20×)",
+  "cinematiczoom.option.regular_starting_zoom.tooltip": "Magnification applied when regular zoom starts.",
+
+  "cinematiczoom.option.scale_sensitivity": "Scale mouse sensitivity",
+  "cinematiczoom.option.scale_sensitivity.tooltip": "Scale down mouse sensitivity proportionally with zoom level so the view remains smooth and easy to control.",
 
   "cinematiczoom.option.bars_percent": "Black bars height, %",
   "cinematiczoom.option.bars_percent.tooltip": "Percent of screen height for each bar (top and bottom). 0–50%.",
 
-  "cinematiczoom.option.smooth_ms": "Smoothing speed (ms, 0 = instant)",
-  "cinematiczoom.option.smooth_ms.tooltip": "Time to reach ~90% of the target. 0 disables the animation.",
+  "cinematiczoom.option.zoom_in_ms": "Zoom in duration (ms, 0 = instant)",
+  "cinematiczoom.option.zoom_in_ms.tooltip": "Time in milliseconds to animate zooming in. 0 disables the animation.",
+
+  "cinematiczoom.option.zoom_out_ms": "Zoom out duration (ms, 0 = instant)",
+  "cinematiczoom.option.zoom_out_ms.tooltip": "Time in milliseconds to animate zooming out. 0 disables the animation.",
+
+  "cinematiczoom.option.zoom_in_curve": "Zoom in curve",
+  "cinematiczoom.option.zoom_in_curve.tooltip": "Easing curve applied when zooming in.",
+
+  "cinematiczoom.option.zoom_out_curve": "Zoom out curve",
+  "cinematiczoom.option.zoom_out_curve.tooltip": "Easing curve applied when zooming out.",
 
   "cinematiczoom.option.mouse_wheel_enabled": "Mouse wheel during zoom",
-  "cinematiczoom.option.mouse_wheel_enabled.tooltip": "Allow adjusting zoom level with the mouse wheel while holding the zoom key.",
+  "cinematiczoom.option.mouse_wheel_enabled.tooltip": "Allow adjusting zoom level with the mouse wheel while holding either zoom key.",
 
   "cinematiczoom.option.hide_hud": "Hide HUD/crosshair while zooming",
   "cinematiczoom.option.hide_hud.tooltip": "Temporarily enables F1-like mode to hide HUD and crosshair during zoom.",

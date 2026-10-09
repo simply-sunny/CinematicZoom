@@ -11,6 +11,7 @@ import org.lwjgl.glfw.GLFW;
 
 public final class CinematicZoomClient implements ClientModInitializer {
     public static KeyBinding ZOOM_KEYBIND;
+    public static KeyBinding ZOOM_NO_BARS_KEYBIND;
 
     @Override
     public void onInitializeClient() {
@@ -22,8 +23,18 @@ public final class CinematicZoomClient implements ClientModInitializer {
                 GLFW.GLFW_KEY_C,
                 "key.categories.cinematiczoom"
         ));
+        ZOOM_NO_BARS_KEYBIND = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.cinematiczoom.zoom_no_bars",
+                InputUtil.Type.KEYSYM,
+                InputUtil.UNKNOWN_KEY.getCode(),
+                "key.categories.cinematiczoom"
+        ));
 
-        ClientTickEvents.END_CLIENT_TICK.register(client -> ZoomManager.tick(client, ZOOM_KEYBIND));
+        ClientTickEvents.END_CLIENT_TICK.register(client -> ZoomManager.tick(
+                client,
+                ZOOM_KEYBIND,
+                ZOOM_NO_BARS_KEYBIND
+        ));
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> ZoomManager.reset(client));
         ClientLifecycleEvents.CLIENT_STOPPING.register(ZoomManager::reset);
     }
