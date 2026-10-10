@@ -51,20 +51,8 @@ public final class ZoomManager {
 
     private static void applyOverrides(Minecraft client, ZoomMode mode) {
         ZoomConfig cfg = ZoomConfig.INSTANCE;
-        boolean wantHideHud = (mode == ZoomMode.CINEMATIC && cfg.cinematicHideHud && cfg.cinematicHideCrosshair)
-                || (mode == ZoomMode.REGULAR && cfg.regularHideHud && cfg.regularHideCrosshair);
         boolean wantSmoothCam = (mode == ZoomMode.CINEMATIC && cfg.cinematicCamera)
                 || (mode == ZoomMode.REGULAR && cfg.regularCinematicCamera);
-
-        if (wantHideHud) {
-            if (!client.options.hideGui) {
-                client.options.hideGui = true;
-                hudForcedByUs = true;
-            }
-        } else if (hudForcedByUs) {
-            client.options.hideGui = false;
-            hudForcedByUs = false;
-        }
 
         if (wantSmoothCam) {
             if (!client.options.smoothCamera) {

@@ -9,6 +9,7 @@
     "OptionsMixin",
     "MinecraftMixin",
     "GuiMixin",
+    "ItemInHandRendererMixin",
 		  "GameRendererMixin"
  		],
 	"injectors": {

@@ -32,4 +32,11 @@ public class HudMixin {
             ci.cancel();
         }
     }
+
+    @Inject(method = "extractBossOverlay", at = @At("HEAD"), cancellable = true)
+    private void cinematiczoom$hideBossOverlay(GuiGraphicsExtractor extractor, DeltaTracker tracker, CallbackInfo ci) {
+        if (ZoomManager.shouldHideHud()) {
+            ci.cancel();
+        }
+    }
 }

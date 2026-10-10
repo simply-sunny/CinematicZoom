@@ -60,7 +60,7 @@ public final class ZoomRegressionTest {
             cinematic.down = false;
             regular.down = true;
             tick();
-            require(!client.gui.hud.isHidden(), "regular mode should restore HUD");
+            require(!ZoomManager.shouldHideHud(), "regular mode should restore HUD");
             require(!client.options.smoothCamera, "regular mode should restore camera");
             client.level = null;
             tick();
@@ -82,7 +82,7 @@ public final class ZoomRegressionTest {
             tick();
             settle();
             near(ZoomManager.getCurrentFovMul(), 1.0 / 6);
-            require(client.gui.hud.isHidden(), "cinematic profile did not hide HUD");
+            require(ZoomManager.shouldHideHud(), "cinematic profile did not hide HUD");
         });
         run("hold zoom stops when a screen opens", () -> {
             cinematic.down = true;

@@ -10,6 +10,7 @@
     "MinecraftMixin",
 		  "GuiMixin",
     "HudMixin",
+    "ItemInHandRendererMixin",
     "GameRendererMixin"
  		],
 	"injectors": {
