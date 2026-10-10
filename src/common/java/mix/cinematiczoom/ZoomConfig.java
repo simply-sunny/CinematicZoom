@@ -32,6 +32,8 @@ public final class ZoomConfig {
     public ZoomCurve cinematicZoomInCurve = ZoomCurve.EXPONENTIAL;
     public ZoomCurve cinematicZoomOutCurve = ZoomCurve.EXPONENTIAL;
     public boolean cinematicHideHud = true;
+    public boolean cinematicHideCrosshair = true;
+    public boolean cinematicHideHands = false;
     public boolean cinematicCamera = true;
     public boolean cinematicScaleSensitivity = true;
     public boolean cinematicRemoveBobbing = true;
@@ -44,6 +46,8 @@ public final class ZoomConfig {
     public ZoomCurve regularZoomInCurve = ZoomCurve.EXPONENTIAL;
     public ZoomCurve regularZoomOutCurve = ZoomCurve.EXPONENTIAL;
     public boolean regularHideHud = false;
+    public boolean regularHideCrosshair = false;
+    public boolean regularHideHands = false;
     public boolean regularCinematicCamera = false;
     public boolean regularScaleSensitivity = true;
     public boolean regularRemoveBobbing = true;
@@ -112,6 +116,14 @@ public final class ZoomConfig {
                 if (json.has("hideHudDuringZoom") && !json.has("cinematicHideHud")) {
                     loaded.cinematicHideHud = json.get("hideHudDuringZoom").getAsBoolean();
                 }
+                if (json.has("cinematicHideHud") || json.has("hideHudDuringZoom")) {
+                    if (!json.has("cinematicHideCrosshair")) {
+                        loaded.cinematicHideCrosshair = loaded.cinematicHideHud;
+                    }
+                }
+                if (json.has("regularHideHud") && !json.has("regularHideCrosshair")) {
+                    loaded.regularHideCrosshair = loaded.regularHideHud;
+                }
                 if (json.has("enableCinematicCamera") && !json.has("cinematicCamera")) {
                     loaded.cinematicCamera = json.get("enableCinematicCamera").getAsBoolean();
                 }
@@ -178,6 +190,8 @@ public final class ZoomConfig {
         cinematicZoomInCurve = other.cinematicZoomInCurve;
         cinematicZoomOutCurve = other.cinematicZoomOutCurve;
         cinematicHideHud = other.cinematicHideHud;
+        cinematicHideCrosshair = other.cinematicHideCrosshair;
+        cinematicHideHands = other.cinematicHideHands;
         cinematicCamera = other.cinematicCamera;
         cinematicScaleSensitivity = other.cinematicScaleSensitivity;
         cinematicRemoveBobbing = other.cinematicRemoveBobbing;
@@ -189,6 +203,8 @@ public final class ZoomConfig {
         regularZoomInCurve = other.regularZoomInCurve;
         regularZoomOutCurve = other.regularZoomOutCurve;
         regularHideHud = other.regularHideHud;
+        regularHideCrosshair = other.regularHideCrosshair;
+        regularHideHands = other.regularHideHands;
         regularCinematicCamera = other.regularCinematicCamera;
         regularScaleSensitivity = other.regularScaleSensitivity;
         regularRemoveBobbing = other.regularRemoveBobbing;

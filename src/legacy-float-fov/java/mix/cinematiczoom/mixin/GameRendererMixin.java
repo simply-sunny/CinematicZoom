@@ -19,6 +19,13 @@ public class GameRendererMixin {
         }
     }
 
+    @Inject(method = "renderHand", at = @At("HEAD"), cancellable = true)
+    private void cinematiczoom$hideHands(CallbackInfo ci) {
+        if (ZoomManager.shouldHideHands()) {
+            ci.cancel();
+        }
+    }
+
     @Inject(method = "getFov(Lnet/minecraft/client/render/Camera;FZ)F",
             at = @At("RETURN"), cancellable = true)
     private void cinematiczoom$applyZoom(Camera camera, float tickDelta, boolean changingFov,

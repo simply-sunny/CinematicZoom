@@ -17,4 +17,25 @@ public class InGameHudMixin {
     private void cinematiczoom$drawBarsHead(DrawContext ctx, RenderTickCounter tickCounter, CallbackInfo ci) {
         ZoomManager.renderBars(ctx);
     }
+
+    @Inject(method = "renderCrosshair", at = @At("HEAD"), cancellable = true)
+    private void cinematiczoom$hideCrosshair(CallbackInfo ci) {
+        if (ZoomManager.shouldHideCrosshair()) {
+            ci.cancel();
+        }
+    }
+
+    @Inject(method = "renderHotbar", at = @At("HEAD"), cancellable = true)
+    private void cinematiczoom$hideHotbar(CallbackInfo ci) {
+        if (ZoomManager.shouldHideHud()) {
+            ci.cancel();
+        }
+    }
+
+    @Inject(method = "renderStatusBars", at = @At("HEAD"), cancellable = true)
+    private void cinematiczoom$hideStatusBars(CallbackInfo ci) {
+        if (ZoomManager.shouldHideHud()) {
+            ci.cancel();
+        }
+    }
 }

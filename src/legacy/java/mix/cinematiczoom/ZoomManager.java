@@ -53,8 +53,8 @@ public final class ZoomManager {
 
     private static void applyOverrides(MinecraftClient client, ZoomMode mode) {
         ZoomConfig cfg = ZoomConfig.INSTANCE;
-        boolean wantHideHud = (mode == ZoomMode.CINEMATIC && cfg.cinematicHideHud)
-                || (mode == ZoomMode.REGULAR && cfg.regularHideHud);
+        boolean wantHideHud = (mode == ZoomMode.CINEMATIC && cfg.cinematicHideHud && cfg.cinematicHideCrosshair)
+                || (mode == ZoomMode.REGULAR && cfg.regularHideHud && cfg.regularHideCrosshair);
         boolean wantSmoothCam = (mode == ZoomMode.CINEMATIC && cfg.cinematicCamera)
                 || (mode == ZoomMode.REGULAR && cfg.regularCinematicCamera);
 
@@ -131,7 +131,21 @@ public final class ZoomManager {
     }
 
     public static boolean shouldHideHud() {
-        return HudController.shouldHideHud();
+        if (!isZoomActive()) return false;
+        ZoomConfig cfg = ZoomConfig.INSTANCE;
+        return currentAppliedMode == ZoomMode.REGULAR ? cfg.regularHideHud : cfg.cinematicHideHud;
+    }
+
+    public static boolean shouldHideCrosshair() {
+        if (!isZoomActive()) return false;
+        ZoomConfig cfg = ZoomConfig.INSTANCE;
+        return currentAppliedMode == ZoomMode.REGULAR ? cfg.regularHideCrosshair : cfg.cinematicHideCrosshair;
+    }
+
+    public static boolean shouldHideHands() {
+        if (!isZoomActive()) return false;
+        ZoomConfig cfg = ZoomConfig.INSTANCE;
+        return currentAppliedMode == ZoomMode.REGULAR ? cfg.regularHideHands : cfg.cinematicHideHands;
     }
 
     public static void renderBars(DrawContext context) {

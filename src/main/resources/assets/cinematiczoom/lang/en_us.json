@@ -66,8 +66,14 @@
   "cinematiczoom.option.max_zoom_multiplier": "Maximum backward zoom (FOV multiplier)",
   "cinematiczoom.option.max_zoom_multiplier.tooltip": "Multiplier for expanding FOV when scrolling backward past 1× for ultrawide cinematic shots (e.g. 2.0× doubles FOV).",
 
-  "cinematiczoom.option.hide_hud": "Hide HUD/crosshair while zooming",
-  "cinematiczoom.option.hide_hud.tooltip": "Temporarily enables F1-like mode to hide HUD and crosshair during zoom.",
+  "cinematiczoom.option.hide_hud": "Hide HUD while zooming",
+  "cinematiczoom.option.hide_hud.tooltip": "Hides hotbar, health, and status effects while zooming.",
+
+  "cinematiczoom.option.hide_crosshair": "Hide crosshair while zooming",
+  "cinematiczoom.option.hide_crosshair.tooltip": "Hides the center crosshair reticle while zooming.",
+
+  "cinematiczoom.option.hide_hands": "Hide hands while zooming",
+  "cinematiczoom.option.hide_hands.tooltip": "Hides first-person hands and held items while zooming.",
 
   "cinematiczoom.option.cinematic_cam": "Enable cinematic camera while zooming",
   "cinematiczoom.option.cinematic_cam.tooltip": "Temporarily enables smooth camera (cinematic camera) during zoom.",

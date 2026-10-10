@@ -238,6 +238,29 @@ public final class ZoomRegressionTest {
             settle();
             near(CFG.cinematicBarsPercent, 15);
         });
+        run("granular hiding controls hands, crosshair, and hud independently", () -> {
+            CFG.cinematicHideHud = false;
+            CFG.cinematicHideCrosshair = false;
+            CFG.cinematicHideHands = true;
+            cinematic.down = true;
+            tick();
+            settle();
+            require(!ZoomManager.shouldHideHud(), "hud should not be hidden");
+            require(!ZoomManager.shouldHideCrosshair(), "crosshair should not be hidden");
+            require(ZoomManager.shouldHideHands(), "hands should be hidden");
+
+            CFG.cinematicHideHands = false;
+            CFG.cinematicHideCrosshair = true;
+            require(!ZoomManager.shouldHideHands(), "hands should be visible");
+            require(ZoomManager.shouldHideCrosshair(), "crosshair should be hidden");
+
+            cinematic.down = false;
+            tick();
+            settle();
+            require(!ZoomManager.shouldHideHands(), "inactive zoom should not hide hands");
+            require(!ZoomManager.shouldHideCrosshair(), "inactive zoom should not hide crosshair");
+            require(!ZoomManager.shouldHideHud(), "inactive zoom should not hide hud");
+        });
         run("disabling arrow keys config ignores bar adjustment", () -> {
             CFG.cinematicBarsPercent = 15;
             CFG.arrowKeysAdjustBars = false;

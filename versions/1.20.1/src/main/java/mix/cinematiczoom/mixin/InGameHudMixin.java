@@ -10,9 +10,27 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
-    @Inject(method = "render(Lnet/minecraft/client/gui/DrawContext;F)V", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "render(Lnet/minecraft/client/gui/DrawContext;F)V", at = @At("HEAD"))
     private void cinematiczoom$drawBarsHead(DrawContext context, float tickDelta, CallbackInfo ci) {
         ZoomManager.renderBars(context);
+    }
+
+    @Inject(method = "renderCrosshair", at = @At("HEAD"), cancellable = true)
+    private void cinematiczoom$hideCrosshair(CallbackInfo ci) {
+        if (ZoomManager.shouldHideCrosshair()) {
+            ci.cancel();
+        }
+    }
+
+    @Inject(method = "renderHotbar", at = @At("HEAD"), cancellable = true)
+    private void cinematiczoom$hideHotbar(CallbackInfo ci) {
+        if (ZoomManager.shouldHideHud()) {
+            ci.cancel();
+        }
+    }
+
+    @Inject(method = "renderStatusBars", at = @At("HEAD"), cancellable = true)
+    private void cinematiczoom$hideStatusBars(CallbackInfo ci) {
         if (ZoomManager.shouldHideHud()) {
             ci.cancel();
         }

@@ -116,6 +116,20 @@ public final class ModMenuIntegration implements ModMenuApi {
             );
 
             cinematicCat.addEntry(
+                eb.startBooleanToggle(Component.translatable("cinematiczoom.option.hide_crosshair"), cfg.cinematicHideCrosshair)
+                  .setTooltip(Component.translatable("cinematiczoom.option.hide_crosshair.tooltip"))
+                  .setSaveConsumer(v -> cfg.cinematicHideCrosshair = v)
+                  .build()
+            );
+
+            cinematicCat.addEntry(
+                eb.startBooleanToggle(Component.translatable("cinematiczoom.option.hide_hands"), cfg.cinematicHideHands)
+                  .setTooltip(Component.translatable("cinematiczoom.option.hide_hands.tooltip"))
+                  .setSaveConsumer(v -> cfg.cinematicHideHands = v)
+                  .build()
+            );
+
+            cinematicCat.addEntry(
                 eb.startBooleanToggle(Component.translatable("cinematiczoom.option.cinematic_cam"), cfg.cinematicCamera)
                   .setTooltip(Component.translatable("cinematiczoom.option.cinematic_cam.tooltip"))
                   .setSaveConsumer(v -> cfg.cinematicCamera = v)
@@ -188,6 +202,20 @@ public final class ModMenuIntegration implements ModMenuApi {
                 eb.startBooleanToggle(Component.translatable("cinematiczoom.option.hide_hud"), cfg.regularHideHud)
                   .setTooltip(Component.translatable("cinematiczoom.option.hide_hud.tooltip"))
                   .setSaveConsumer(v -> cfg.regularHideHud = v)
+                  .build()
+            );
+
+            regularCat.addEntry(
+                eb.startBooleanToggle(Component.translatable("cinematiczoom.option.hide_crosshair"), cfg.regularHideCrosshair)
+                  .setTooltip(Component.translatable("cinematiczoom.option.hide_crosshair.tooltip"))
+                  .setSaveConsumer(v -> cfg.regularHideCrosshair = v)
+                  .build()
+            );
+
+            regularCat.addEntry(
+                eb.startBooleanToggle(Component.translatable("cinematiczoom.option.hide_hands"), cfg.regularHideHands)
+                  .setTooltip(Component.translatable("cinematiczoom.option.hide_hands.tooltip"))
+                  .setSaveConsumer(v -> cfg.regularHideHands = v)
                   .build()
             );
 
