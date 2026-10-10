@@ -43,6 +43,35 @@ public final class ModMenuIntegration implements ModMenuApi {
             );
 
             cinematicCat.addEntry(
+                eb.startBooleanToggle(Text.translatable("cinematiczoom.option.arrow_keys_adjust_bars"), cfg.arrowKeysAdjustBars)
+                  .setTooltip(Text.translatable("cinematiczoom.option.arrow_keys_adjust_bars.tooltip"))
+                  .setSaveConsumer(v -> cfg.arrowKeysAdjustBars = v)
+                  .build()
+            );
+
+            cinematicCat.addEntry(
+                eb.startFloatField(Text.translatable("cinematiczoom.option.bar_adjust_step"), cfg.barAdjustStep)
+                  .setMin(0.1f).setMax(10.0f)
+                  .setTooltip(Text.translatable("cinematiczoom.option.bar_adjust_step.tooltip"))
+                  .setSaveConsumer(v -> cfg.barAdjustStep = v)
+                  .build()
+            );
+
+            cinematicCat.addEntry(
+                eb.startBooleanToggle(Text.translatable("cinematiczoom.option.smooth_bar_change"), cfg.smoothBarChange)
+                  .setTooltip(Text.translatable("cinematiczoom.option.smooth_bar_change.tooltip"))
+                  .setSaveConsumer(v -> cfg.smoothBarChange = v)
+                  .build()
+            );
+
+            cinematicCat.addEntry(
+                eb.startBooleanToggle(Text.translatable("cinematiczoom.option.preserve_bar_adjustment"), cfg.preserveBarAdjustment)
+                  .setTooltip(Text.translatable("cinematiczoom.option.preserve_bar_adjustment.tooltip"))
+                  .setSaveConsumer(v -> cfg.preserveBarAdjustment = v)
+                  .build()
+            );
+
+            cinematicCat.addEntry(
                 eb.startIntField(Text.translatable("cinematiczoom.option.zoom_in_ms"), cfg.cinematicZoomInMs)
                   .setMin(0).setMax(5000)
                   .setTooltip(Text.translatable("cinematiczoom.option.zoom_in_ms.tooltip"))

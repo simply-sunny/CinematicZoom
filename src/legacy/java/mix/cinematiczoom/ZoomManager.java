@@ -18,6 +18,11 @@ public final class ZoomManager {
     }
 
     public static void tick(MinecraftClient client, KeyBinding cinematicKey, KeyBinding regularKey) {
+        tick(client, cinematicKey, regularKey, null, null);
+    }
+
+    public static void tick(MinecraftClient client, KeyBinding cinematicKey, KeyBinding regularKey,
+                            KeyBinding increaseBarsKey, KeyBinding decreaseBarsKey) {
         boolean inWorld = client.world != null && client.player != null;
         boolean canInteract = inWorld
                 && client.currentScreen == null
@@ -29,6 +34,16 @@ public final class ZoomManager {
         ZoomMode desiredMode = INPUT.update(inWorld, isCinematicDown, isRegularDown);
 
         ZOOM.update(desiredMode);
+
+        if (canInteract && ZOOM.isActive() && ZoomConfig.INSTANCE.arrowKeysAdjustBars) {
+            boolean up = isZoomKeyPressed(client, increaseBarsKey);
+            boolean down = isZoomKeyPressed(client, decreaseBarsKey);
+            if (up && !down) {
+                ZOOM.adjustBars(ZoomConfig.INSTANCE.barAdjustStep);
+            } else if (down && !up) {
+                ZOOM.adjustBars(-ZoomConfig.INSTANCE.barAdjustStep);
+            }
+        }
 
         if (desiredMode != currentAppliedMode) {
             applyOverrides(client, desiredMode);
@@ -105,6 +120,10 @@ public final class ZoomManager {
 
     public static boolean shouldRemoveBobbing() {
         return ZOOM.shouldRemoveBobbing();
+    }
+
+    public static boolean adjustBars(float delta) {
+        return ZOOM.adjustBars(delta);
     }
 
     public static boolean onWheel(double vertical) {

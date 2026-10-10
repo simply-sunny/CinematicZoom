@@ -23,6 +23,10 @@ public final class ZoomConfig {
     // Cinematic Zoom Profile
     public float cinematicStartingZoom = 3.0f;
     public float cinematicBarsPercent = 15.0f;
+    public boolean arrowKeysAdjustBars = true;
+    public float barAdjustStep = 1.0f;
+    public boolean smoothBarChange = true;
+    public boolean preserveBarAdjustment = true;
     public int cinematicZoomInMs = 240;
     public int cinematicZoomOutMs = 240;
     public ZoomCurve cinematicZoomInCurve = ZoomCurve.EXPONENTIAL;
@@ -156,11 +160,16 @@ public final class ZoomConfig {
 
         discreteScrollStep = Math.max(0.1f, Math.min(5.0f, discreteScrollStep));
         wheelStep = Math.max(0.01f, Math.min(0.25f, wheelStep));
+        barAdjustStep = Math.max(0.1f, Math.min(10.0f, barAdjustStep));
     }
 
     private void copyFrom(ZoomConfig other) {
         cinematicStartingZoom = other.cinematicStartingZoom;
         cinematicBarsPercent = other.cinematicBarsPercent;
+        arrowKeysAdjustBars = other.arrowKeysAdjustBars;
+        barAdjustStep = other.barAdjustStep;
+        smoothBarChange = other.smoothBarChange;
+        preserveBarAdjustment = other.preserveBarAdjustment;
         cinematicZoomInMs = other.cinematicZoomInMs;
         cinematicZoomOutMs = other.cinematicZoomOutMs;
         cinematicZoomInCurve = other.cinematicZoomInCurve;

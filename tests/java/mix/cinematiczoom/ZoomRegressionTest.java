@@ -11,6 +11,8 @@ public final class ZoomRegressionTest {
     private static Minecraft client;
     private static KeyMapping cinematic;
     private static KeyMapping regular;
+    private static KeyMapping barsUp;
+    private static KeyMapping barsDown;
     private static int failures;
     private static int checks;
 
@@ -155,6 +157,111 @@ public final class ZoomRegressionTest {
                 }
             }
         });
+        run("arrow keys adjust bar size when zoomed in", () -> {
+            CFG.cinematicBarsPercent = 15;
+            cinematic.down = true;
+            tick();
+            settle();
+            near(CFG.cinematicBarsPercent, 15);
+            barsUp.down = true;
+            tick();
+            settle();
+            near(CFG.cinematicBarsPercent, 16);
+            barsUp.down = false;
+            barsDown.down = true;
+            tick();
+            settle();
+            near(CFG.cinematicBarsPercent, 15);
+        });
+        run("arrow keys step by custom barAdjustStep", () -> {
+            CFG.cinematicBarsPercent = 15;
+            CFG.barAdjustStep = 2.5f;
+            cinematic.down = true;
+            tick();
+            settle();
+            barsUp.down = true;
+            tick();
+            settle();
+            near(CFG.cinematicBarsPercent, 17.5);
+        });
+        run("preserveBarAdjustment toggles config persistence", () -> {
+            CFG.cinematicBarsPercent = 15;
+            CFG.preserveBarAdjustment = false;
+            cinematic.down = true;
+            tick();
+            settle();
+            barsUp.down = true;
+            tick();
+            settle();
+            near(CFG.cinematicBarsPercent, 15);
+            cinematic.down = false;
+            tick();
+            settle();
+            cinematic.down = true;
+            tick();
+            settle();
+            near(CFG.cinematicBarsPercent, 15);
+        });
+        run("smoothBarChange animates while discrete snaps immediately", () -> {
+            CFG.cinematicZoomInMs = 240;
+            CFG.smoothBarChange = false;
+            cinematic.down = true;
+            tick();
+            settle();
+            require(ZoomManager.adjustBars(2.0f), "adjustBars failed");
+            near(CFG.cinematicBarsPercent, 17);
+            CFG.cinematicZoomInMs = 0;
+            CFG.smoothBarChange = true;
+        });
+        run("arrow keys do nothing when zoom is inactive or in regular zoom", () -> {
+            CFG.cinematicBarsPercent = 15;
+            barsUp.down = true;
+            tick();
+            settle();
+            near(CFG.cinematicBarsPercent, 15);
+            regular.down = true;
+            tick();
+            settle();
+            barsUp.down = true;
+            tick();
+            settle();
+            near(CFG.cinematicBarsPercent, 15);
+        });
+        run("disabling arrow keys config ignores bar adjustment", () -> {
+            CFG.cinematicBarsPercent = 15;
+            CFG.arrowKeysAdjustBars = false;
+            cinematic.down = true;
+            tick();
+            settle();
+            barsUp.down = true;
+            tick();
+            settle();
+            near(CFG.cinematicBarsPercent, 15);
+        });
+        run("bar size adjustment stays clamped between 0 and 50", () -> {
+            CFG.cinematicBarsPercent = 49.8f;
+            cinematic.down = true;
+            tick();
+            settle();
+            barsUp.down = true;
+            tick();
+            tick();
+            settle();
+            near(CFG.cinematicBarsPercent, 50);
+            barsUp.down = false;
+            cinematic.down = false;
+            tick();
+            settle();
+            CFG.cinematicBarsPercent = 0.3f;
+            cinematic.down = true;
+            tick();
+            settle();
+            barsDown.down = true;
+            tick();
+            tick();
+            settle();
+            near(CFG.cinematicBarsPercent, 0);
+        });
         if (failures != 0) {
             throw new AssertionError(failures + " of " + checks + " regression checks failed");
         }
@@ -206,6 +313,8 @@ public final class ZoomRegressionTest {
         client = new Minecraft();
         cinematic = new KeyMapping();
         regular = new KeyMapping();
+        barsUp = new KeyMapping();
+        barsDown = new KeyMapping();
         checks++;
         try {
             check.run();
@@ -224,7 +333,7 @@ public final class ZoomRegressionTest {
     }
 
     private static void tick() {
-        ZoomManager.tick(client, cinematic, regular);
+        ZoomManager.tick(client, cinematic, regular, barsUp, barsDown);
     }
 
     private static void settle() {

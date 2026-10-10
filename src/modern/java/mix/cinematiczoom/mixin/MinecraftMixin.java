@@ -15,7 +15,9 @@ public class MinecraftMixin {
         ZoomManager.tick(
                 Minecraft.getInstance(),
                 CinematicZoomClient.ZOOM_KEYBIND,
-                CinematicZoomClient.ZOOM_NO_BARS_KEYBIND
+                CinematicZoomClient.ZOOM_NO_BARS_KEYBIND,
+                CinematicZoomClient.INCREASE_BARS_KEYBIND,
+                CinematicZoomClient.DECREASE_BARS_KEYBIND
         );
     }
 }

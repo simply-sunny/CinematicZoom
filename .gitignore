@@ -27,6 +27,7 @@ bin/
 # macos
 
 *.DS_Store
+local-testing.gradle
 
 # fabric
 

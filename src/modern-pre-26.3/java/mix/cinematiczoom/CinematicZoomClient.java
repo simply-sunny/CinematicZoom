@@ -13,6 +13,8 @@ public final class CinematicZoomClient implements ClientModInitializer {
     private static final String MODID = "cinematiczoom";
     public static ZoomKeyMapping ZOOM_KEYBIND;
     public static ZoomKeyMapping ZOOM_NO_BARS_KEYBIND;
+    public static ZoomKeyMapping INCREASE_BARS_KEYBIND;
+    public static ZoomKeyMapping DECREASE_BARS_KEYBIND;
 
     public static ZoomKeyMapping[] getKeyMappings() {
         if (ZOOM_KEYBIND == null) {
@@ -29,10 +31,24 @@ public final class CinematicZoomClient implements ClientModInitializer {
                     InputConstants.UNKNOWN.getValue(),
                     category
             );
+            INCREASE_BARS_KEYBIND = new ZoomKeyMapping(
+                    "key.cinematiczoom.increase_bars",
+                    InputConstants.Type.KEYSYM,
+                    GLFW.GLFW_KEY_UP,
+                    category
+            );
+            DECREASE_BARS_KEYBIND = new ZoomKeyMapping(
+                    "key.cinematiczoom.decrease_bars",
+                    InputConstants.Type.KEYSYM,
+                    GLFW.GLFW_KEY_DOWN,
+                    category
+            );
         }
         return new ZoomKeyMapping[] {
                 ZOOM_KEYBIND,
-                ZOOM_NO_BARS_KEYBIND
+                ZOOM_NO_BARS_KEYBIND,
+                INCREASE_BARS_KEYBIND,
+                DECREASE_BARS_KEYBIND
         };
     }
 

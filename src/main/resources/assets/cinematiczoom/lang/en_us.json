@@ -1,6 +1,8 @@
 {
   "key.cinematiczoom.zoom": "Cinematic Zoom",
   "key.cinematiczoom.zoom_no_bars": "Zoom (no bars)",
+  "key.cinematiczoom.increase_bars": "Increase Bar Size",
+  "key.cinematiczoom.decrease_bars": "Decrease Bar Size",
   "key.categories.cinematiczoom": "Cinematic Zoom",
   "key.category.cinematiczoom.main": "Cinematic Zoom",
   "key.category.cinematiczoom.cinematiczoom": "Cinematic Zoom",
@@ -27,6 +29,18 @@
 
   "cinematiczoom.option.bars_percent": "Black bars height, %",
   "cinematiczoom.option.bars_percent.tooltip": "Percent of screen height for each bar (top and bottom). 0–50%.",
+
+  "cinematiczoom.option.arrow_keys_adjust_bars": "Adjust bar size with arrow keys",
+  "cinematiczoom.option.arrow_keys_adjust_bars.tooltip": "Allow adjusting the height of the black bars using the arrow keys while zoomed in.",
+
+  "cinematiczoom.option.bar_adjust_step": "Bar adjustment step (%)",
+  "cinematiczoom.option.bar_adjust_step.tooltip": "Percentage change applied per tick while holding the bar adjust keys.",
+
+  "cinematiczoom.option.smooth_bar_change": "Smooth bar size adjustment",
+  "cinematiczoom.option.smooth_bar_change.tooltip": "Smoothly animates the black bars when adjusting their size instead of snapping discretely.",
+
+  "cinematiczoom.option.preserve_bar_adjustment": "Remember bar size adjustments",
+  "cinematiczoom.option.preserve_bar_adjustment.tooltip": "Saves bar size changes made with arrow keys as the new default for future zooms.",
 
   "cinematiczoom.option.zoom_in_ms": "Zoom in duration (ms, 0 = instant)",
   "cinematiczoom.option.zoom_in_ms.tooltip": "Time in milliseconds to animate zooming in. 0 disables the animation.",

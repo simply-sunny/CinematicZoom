@@ -7,6 +7,7 @@ final class ZoomController {
     private float currentMultiplier = 1.0f;
     private float targetMultiplier = 1.0f;
     private float heldMultiplier = startingMultiplier(ZoomMode.CINEMATIC);
+    private float heldBarsPercent = ZoomConfig.INSTANCE.cinematicBarsPercent;
     private float currentBarsPercent;
     private float targetBarsPercent;
 
@@ -27,6 +28,7 @@ final class ZoomController {
 
         if (starting) {
             heldMultiplier = startingMultiplier(mode);
+            heldBarsPercent = ZoomConfig.INSTANCE.cinematicBarsPercent;
         }
 
         this.activeMode = mode;
@@ -36,7 +38,7 @@ final class ZoomController {
 
         if (mode == ZoomMode.CINEMATIC) {
             targetMultiplier = heldMultiplier;
-            targetBarsPercent = ZoomConfig.INSTANCE.cinematicBarsPercent;
+            targetBarsPercent = heldBarsPercent;
         } else if (mode == ZoomMode.REGULAR) {
             targetMultiplier = heldMultiplier;
             targetBarsPercent = 0f;
@@ -56,6 +58,7 @@ final class ZoomController {
         currentMultiplier = 1.0f;
         targetMultiplier = 1.0f;
         heldMultiplier = startingMultiplier(ZoomMode.CINEMATIC);
+        heldBarsPercent = ZoomConfig.INSTANCE.cinematicBarsPercent;
         currentBarsPercent = 0f;
         targetBarsPercent = 0f;
         animStartMultiplier = 1.0f;
@@ -91,12 +94,25 @@ final class ZoomController {
         double eased = animCurve != null ? animCurve.apply(progress) : progress;
 
         currentMultiplier = (float) lerp(animStartMultiplier, targetMultiplier, eased);
-        currentBarsPercent = (float) lerp(animStartBarsPercent, targetBarsPercent, eased);
+
+        if (progress < 1.0) {
+            currentBarsPercent = (float) lerp(animStartBarsPercent, targetBarsPercent, eased);
+        } else if (currentBarsPercent != targetBarsPercent) {
+            if (ZoomConfig.INSTANCE.smoothBarChange) {
+                double factor = 1.0 - Math.exp(-deltaMs / 60.0);
+                currentBarsPercent = (float) (currentBarsPercent + (targetBarsPercent - currentBarsPercent) * factor);
+                if (Math.abs(currentBarsPercent - targetBarsPercent) < 1e-3f) {
+                    currentBarsPercent = targetBarsPercent;
+                }
+            } else {
+                currentBarsPercent = targetBarsPercent;
+            }
+        }
 
         if (progress >= 1.0 || Math.abs(currentMultiplier - targetMultiplier) < 1e-4f) {
             currentMultiplier = targetMultiplier;
         }
-        if (progress >= 1.0 || Math.abs(currentBarsPercent - targetBarsPercent) < 1e-3f) {
+        if (progress >= 1.0 && Math.abs(currentBarsPercent - targetBarsPercent) < 1e-3f) {
             currentBarsPercent = targetBarsPercent;
         }
     }
@@ -156,6 +172,19 @@ final class ZoomController {
 
         if (targetMultiplier != prevTarget) {
             startAnimation(true);
+        }
+        return true;
+    }
+
+    boolean adjustBars(float delta) {
+        if (!activeMode.isActive() || activeMode != ZoomMode.CINEMATIC) return false;
+        heldBarsPercent = clamp(heldBarsPercent + delta, 0.0f, 50.0f);
+        if (ZoomConfig.INSTANCE.preserveBarAdjustment) {
+            ZoomConfig.INSTANCE.cinematicBarsPercent = heldBarsPercent;
+        }
+        targetBarsPercent = heldBarsPercent;
+        if (!ZoomConfig.INSTANCE.smoothBarChange) {
+            currentBarsPercent = heldBarsPercent;
         }
         return true;
     }
