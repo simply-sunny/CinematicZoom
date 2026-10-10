@@ -199,7 +199,7 @@ final class ZoomController {
         boolean scale = lastActiveMode == ZoomMode.REGULAR
                 ? cfg.regularScaleSensitivity
                 : cfg.cinematicScaleSensitivity;
-        return scale ? currentMultiplier : 1.0;
+        return scale ? Math.min(1.0, currentMultiplier) : 1.0;
     }
 
     boolean shouldRemoveBobbing() {

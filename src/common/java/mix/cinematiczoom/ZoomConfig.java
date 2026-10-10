@@ -54,7 +54,7 @@ public final class ZoomConfig {
     public boolean discreteScroll = false;
     public float discreteScrollStep = 1.0f;
     public float minZoomMultiplier = 1.0f / 30.0f;
-    public float maxZoomMultiplier = 1.00f;
+    public float maxZoomMultiplier = 2.0f;
     public float wheelStep = 0.05f;
 
     public void load() {
@@ -72,6 +72,9 @@ public final class ZoomConfig {
                         && (json.has("startingZoom") || json.has("baseZoomMultiplier") || json.has("smoothMs"))
                         && loaded.minZoomMultiplier == 0.10f) {
                     loaded.minZoomMultiplier = 1.0f / 30.0f;
+                }
+                if (!json.has("maxZoomMultiplier") && loaded.maxZoomMultiplier <= 1.0f) {
+                    loaded.maxZoomMultiplier = 2.0f;
                 }
                 if (!json.has("cinematicStartingZoom")) {
                     if (json.has("startingZoom")) {
@@ -149,7 +152,7 @@ public final class ZoomConfig {
         if (regularZoomInCurve == null) regularZoomInCurve = ZoomCurve.EXPONENTIAL;
         if (regularZoomOutCurve == null) regularZoomOutCurve = ZoomCurve.EXPONENTIAL;
 
-        maxZoomMultiplier = Math.max(0.01f, Math.min(1.0f, maxZoomMultiplier));
+        maxZoomMultiplier = Math.max(1.0f, Math.min(3.0f, maxZoomMultiplier));
         minZoomMultiplier = Math.max(0.01f, Math.min(maxZoomMultiplier, minZoomMultiplier));
 
         float minStarting = 1.0f / maxZoomMultiplier;

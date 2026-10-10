@@ -237,6 +237,14 @@ public final class ModMenuIntegration implements ModMenuApi {
                   .build()
             );
 
+            generalCat.addEntry(
+                eb.startFloatField(Text.translatable("cinematiczoom.option.max_zoom_multiplier"), cfg.maxZoomMultiplier)
+                  .setMin(1.0f).setMax(3.0f)
+                  .setTooltip(Text.translatable("cinematiczoom.option.max_zoom_multiplier.tooltip"))
+                  .setSaveConsumer(v -> cfg.maxZoomMultiplier = v)
+                  .build()
+            );
+
             return builder.build();
         };
     }

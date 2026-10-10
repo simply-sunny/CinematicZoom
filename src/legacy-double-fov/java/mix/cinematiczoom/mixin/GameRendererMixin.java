@@ -28,7 +28,9 @@ public class GameRendererMixin {
         double fov = cir.getReturnValue();
         double mul = ZoomManager.getCurrentFovMul();
         if (mul != 1.0) {
-            cir.setReturnValue(fov * mul);
+            double zoomed = fov * mul;
+            if (zoomed > 175.0) zoomed = 175.0;
+            cir.setReturnValue(zoomed);
         }
     }
 }

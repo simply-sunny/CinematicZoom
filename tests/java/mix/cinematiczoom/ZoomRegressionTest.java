@@ -121,7 +121,7 @@ public final class ZoomRegressionTest {
             near(ZoomManager.getCurrentFovMul(), 1.0 / 30);
             ZoomManager.onWheel(-100);
             settle();
-            near(ZoomManager.getCurrentFovMul(), 1);
+            near(ZoomManager.getCurrentFovMul(), CFG.maxZoomMultiplier);
         });
         run("zero and disabled wheel events are not consumed", () -> {
             regular.down = true;
@@ -140,10 +140,21 @@ public final class ZoomRegressionTest {
             near(ZoomManager.getCurrentFovMul(), 1.0 / 30);
             ZoomManager.onWheel(-100);
             settle();
-            near(ZoomManager.getCurrentFovMul(), 1);
+            near(ZoomManager.getCurrentFovMul(), CFG.maxZoomMultiplier);
             regular.down = false;
             tick();
             require(!ZoomManager.onWheel(1), "inactive wheel event was consumed");
+        });
+        run("wheel allows ultrawide backward zoom past 1x", () -> {
+            regular.down = true;
+            tick();
+            settle();
+            near(ZoomManager.getCurrentFovMul(), 1.0 / 3);
+            ZoomManager.onWheel(-100);
+            settle();
+            near(ZoomManager.getCurrentFovMul(), 2.0);
+            require(ZoomManager.isZoomActive(), "ultrawide zoom should remain active");
+            near(ZoomManager.getSensitivityMultiplier(), 1.0);
         });
         run("easing curves stay bounded and monotonic", () -> {
             for (ZoomCurve curve : ZoomCurve.values()) {

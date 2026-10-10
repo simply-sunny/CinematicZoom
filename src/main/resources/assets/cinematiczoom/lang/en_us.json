@@ -16,10 +16,10 @@
   "cinematiczoom.config.category.general": "General & Wheel",
 
   "cinematiczoom.option.cinematic_starting_zoom": "Starting zoom",
-  "cinematiczoom.option.cinematic_starting_zoom.tooltip": "Magnification applied when cinematic zoom starts. 1× shows black bars without zoom.",
+  "cinematiczoom.option.cinematic_starting_zoom.tooltip": "Magnification applied when cinematic zoom starts. Values below 1× produce an ultrawide view.",
 
   "cinematiczoom.option.regular_starting_zoom": "Starting zoom",
-  "cinematiczoom.option.regular_starting_zoom.tooltip": "Magnification applied when regular zoom starts.",
+  "cinematiczoom.option.regular_starting_zoom.tooltip": "Magnification applied when regular zoom starts. Values below 1× produce an ultrawide view.",
 
   "cinematiczoom.option.scale_sensitivity": "Scale mouse sensitivity",
   "cinematiczoom.option.scale_sensitivity.tooltip": "Scale down mouse sensitivity proportionally with zoom level so the view remains smooth and easy to control.",
@@ -62,6 +62,9 @@
 
   "cinematiczoom.option.discrete_scroll_step": "Discrete zoom step (×)",
   "cinematiczoom.option.discrete_scroll_step.tooltip": "Magnification amount to add or subtract with each scroll wheel notch when discrete scrolling is enabled.",
+
+  "cinematiczoom.option.max_zoom_multiplier": "Maximum backward zoom (FOV multiplier)",
+  "cinematiczoom.option.max_zoom_multiplier.tooltip": "Multiplier for expanding FOV when scrolling backward past 1× for ultrawide cinematic shots (e.g. 2.0× doubles FOV).",
 
   "cinematiczoom.option.hide_hud": "Hide HUD/crosshair while zooming",
   "cinematiczoom.option.hide_hud.tooltip": "Temporarily enables F1-like mode to hide HUD and crosshair during zoom.",
