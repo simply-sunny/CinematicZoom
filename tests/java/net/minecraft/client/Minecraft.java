@@ -5,6 +5,7 @@ public final class Minecraft {
     public Object player = new Object();
     public final Options options = new Options();
     public final Gui gui = new Gui();
+    public Object screen;
     public boolean focused = true;
 
     public boolean isWindowActive() {

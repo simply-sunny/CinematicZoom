@@ -39,4 +39,11 @@ public class HudMixin {
             ci.cancel();
         }
     }
+
+    @Inject(method = "extractDebugOverlay", at = @At("HEAD"), cancellable = true)
+    private void cinematiczoom$hideDebugOverlay(GuiGraphicsExtractor extractor, CallbackInfo ci) {
+        if (ZoomManager.shouldHideHud()) {
+            ci.cancel();
+        }
+    }
 }

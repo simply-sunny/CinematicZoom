@@ -18,6 +18,7 @@ final class ZoomController {
     private ZoomCurve animCurve = ZoomCurve.EXPONENTIAL;
 
     private long lastFrameNanos;
+    private double baseFov = 70.0;
 
     void update(ZoomMode mode) {
         boolean starting = mode.isActive() && !activeMode.isActive();
@@ -143,8 +144,14 @@ final class ZoomController {
 
         float prevTarget = heldMultiplier;
         ZoomConfig cfg = ZoomConfig.INSTANCE;
+        ZoomMode mode = activeMode.isActive() ? activeMode : lastActiveMode;
+        boolean magnetize = (mode == ZoomMode.REGULAR) ? cfg.regularMagnetize : cfg.cinematicMagnetize;
+        String snapList = (mode == ZoomMode.REGULAR) ? cfg.regularSnapPoints : cfg.cinematicSnapPoints;
+        java.util.List<Float> snaps = ZoomSnapPoints.parse(snapList, baseFov, cfg.minZoomMultiplier, cfg.maxZoomMultiplier);
 
-        if (cfg.discreteScroll) {
+        if (magnetize && !snaps.isEmpty()) {
+            heldMultiplier = ZoomSnapPoints.stepBetweenSnaps(heldMultiplier, snaps, vertical);
+        } else if (cfg.discreteScroll) {
             float currentZoom = heldMultiplier <= 0f ? 1.0f : 1.0f / heldMultiplier;
             float step = Math.max(0.1f, cfg.discreteScrollStep);
             float newZoom;
@@ -191,6 +198,16 @@ final class ZoomController {
 
     double currentMultiplier() {
         return currentMultiplier;
+    }
+
+    void setBaseFov(double fov) {
+        if (fov > 10.0 && fov < 170.0) {
+            this.baseFov = fov;
+        }
+    }
+
+    double getBaseFov() {
+        return baseFov;
     }
 
     double getSensitivityMultiplier() {

@@ -55,6 +55,7 @@ public final class ZoomRegressionTest {
         run("toggle profiles switch and disconnect resets state", () -> {
             CFG.cinematicToggle = true;
             CFG.regularToggle = true;
+            CFG.regularHideHud = false;
             cinematic.down = true;
             tick();
             cinematic.down = false;
@@ -87,7 +88,7 @@ public final class ZoomRegressionTest {
         run("hold zoom stops when a screen opens", () -> {
             cinematic.down = true;
             tick();
-            client.gui.screen = new Object();
+            client.gui.screen = client.screen = new Object();
             tick();
             settle();
             require(!ZoomManager.isZoomActive(), "hold zoom stayed active behind a screen");
@@ -146,6 +147,8 @@ public final class ZoomRegressionTest {
             require(!ZoomManager.onWheel(1), "inactive wheel event was consumed");
         });
         run("wheel allows ultrawide backward zoom past 1x", () -> {
+            CFG.allowUltrawide = true;
+            CFG.clamp();
             regular.down = true;
             tick();
             settle();
@@ -155,6 +158,117 @@ public final class ZoomRegressionTest {
             near(ZoomManager.getCurrentFovMul(), 2.0);
             require(ZoomManager.isZoomActive(), "ultrawide zoom should remain active");
             near(ZoomManager.getSensitivityMultiplier(), 1.0);
+            CFG.allowUltrawide = false;
+            CFG.clamp();
+        });
+        run("wheel does not go past 1x when ultrawide is disabled", () -> {
+            CFG.allowUltrawide = false;
+            CFG.clamp();
+            regular.down = true;
+            tick();
+            settle();
+            ZoomManager.onWheel(-100);
+            settle();
+            near(ZoomManager.getCurrentFovMul(), 1.0);
+        });
+        run("hands and hud reappear instantly on release without waiting for animation", () -> {
+            CFG.cinematicHideHud = true;
+            CFG.cinematicHideHands = true;
+            CFG.cinematicHideCrosshair = true;
+            CFG.cinematicZoomOutMs = 500;
+            cinematic.down = true;
+            tick();
+            require(ZoomManager.shouldHideHud(), "hud should be hidden while holding");
+            require(ZoomManager.shouldHideHands(), "hands should be hidden while holding");
+            require(ZoomManager.shouldHideCrosshair(), "crosshair should be hidden while holding");
+            cinematic.down = false;
+            tick();
+            require(!ZoomManager.shouldHideHud(), "hud should reappear instantly on release");
+            require(!ZoomManager.shouldHideHands(), "hands should reappear instantly on release");
+            require(!ZoomManager.shouldHideCrosshair(), "crosshair should reappear instantly on release");
+            CFG.cinematicZoomOutMs = 0;
+            settle();
+        });
+        run("magnetize toggle steps strictly between defined values", () -> {
+            CFG.cinematicMagnetize = true;
+            CFG.cinematicSnapPoints = "2, 4, 8";
+            CFG.cinematicStartingZoom = 2.0f;
+            cinematic.down = true;
+            tick();
+            settle();
+            near(ZoomManager.getCurrentFovMul(), 0.5);
+
+            ZoomManager.onWheel(1);
+            settle();
+            near(ZoomManager.getCurrentFovMul(), 0.25);
+
+            ZoomManager.onWheel(1);
+            settle();
+            near(ZoomManager.getCurrentFovMul(), 0.125);
+
+            ZoomManager.onWheel(-1);
+            settle();
+            near(ZoomManager.getCurrentFovMul(), 0.25);
+
+            ZoomManager.onWheel(-1);
+            settle();
+            near(ZoomManager.getCurrentFovMul(), 0.5);
+
+            CFG.cinematicMagnetize = false;
+            CFG.cinematicSnapPoints = "";
+        });
+        run("disabled magnetize uses normal smooth wheel scroll even with targets set", () -> {
+            CFG.cinematicMagnetize = false;
+            CFG.cinematicSnapPoints = "2, 4, 8";
+            CFG.cinematicStartingZoom = 2.0f;
+            cinematic.down = true;
+            tick();
+            settle();
+            near(ZoomManager.getCurrentFovMul(), 0.5);
+
+            ZoomManager.onWheel(1);
+            settle();
+            near(ZoomManager.getCurrentFovMul(), 0.5 - CFG.wheelStep);
+
+            CFG.cinematicSnapPoints = "";
+        });
+        run("snap points parse zoom levels and FOVs automatically without separate mode", () -> {
+            CFG.regularMagnetize = true;
+            CFG.regularSnapPoints = "35, 14fov, 2x";
+            ZoomManager.setBaseFov(70.0);
+            CFG.regularStartingZoom = 1.0f;
+            regular.down = true;
+            tick();
+            settle();
+
+            // 35 is >= 20 -> 35 FOV (0.5 mul, 2x)
+            // 2x -> 2x zoom (0.5 mul) - deduplicated with 35 FOV
+            // 14fov -> 14 FOV (0.2 mul, 5x)
+            ZoomManager.onWheel(1);
+            settle();
+            near(ZoomManager.getCurrentFovMul(), 0.5); // 35 FOV
+
+            ZoomManager.onWheel(1);
+            settle();
+            near(ZoomManager.getCurrentFovMul(), 0.2); // 14 FOV
+
+            ZoomManager.onWheel(-1);
+            settle();
+            near(ZoomManager.getCurrentFovMul(), 0.5); // back to 35 FOV
+
+            CFG.regularMagnetize = false;
+            CFG.regularSnapPoints = "";
+        });
+        run("default settings have hide hands on and regular hide hud and hands on", () -> {
+            ZoomConfig fresh = new ZoomConfig();
+            require(fresh.cinematicHideHud, "cinematic hide hud should be true");
+            require(fresh.cinematicHideHands, "cinematic hide hands should default to true");
+            require(fresh.regularHideHud, "regular hide hud should default to true");
+            require(fresh.regularHideHands, "regular hide hands should default to true");
+            require(!fresh.allowUltrawide, "allow ultrawide should default to false");
+            require(!fresh.cinematicMagnetize, "cinematic magnetize should default to false");
+            require(!fresh.regularMagnetize, "regular magnetize should default to false");
+            near(fresh.maxZoomMultiplier, 1.0);
         });
         run("easing curves stay bounded and monotonic", () -> {
             for (ZoomCurve curve : ZoomCurve.values()) {

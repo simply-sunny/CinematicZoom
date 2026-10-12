@@ -7,7 +7,6 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 public final class ZoomManager {
     private static final ZoomController ZOOM = new ZoomController();
 
-    private static boolean hudForcedByUs;
     private static boolean smoothCameraForcedByUs;
     private static final ZoomInputState INPUT = new ZoomInputState();
     private static ZoomMode currentAppliedMode = ZoomMode.NONE;
@@ -100,20 +99,28 @@ public final class ZoomManager {
         return ZOOM.adjustBars(delta);
     }
 
+    public static void setBaseFov(double fov) {
+        ZOOM.setBaseFov(fov);
+    }
+
+    public static double getBaseFov() {
+        return ZOOM.getBaseFov();
+    }
+
     public static boolean shouldHideHud() {
-        if (!isZoomActive()) return false;
+        if (!currentAppliedMode.isActive()) return false;
         ZoomConfig cfg = ZoomConfig.INSTANCE;
         return currentAppliedMode == ZoomMode.REGULAR ? cfg.regularHideHud : cfg.cinematicHideHud;
     }
 
     public static boolean shouldHideCrosshair() {
-        if (!isZoomActive()) return false;
+        if (!currentAppliedMode.isActive()) return false;
         ZoomConfig cfg = ZoomConfig.INSTANCE;
         return currentAppliedMode == ZoomMode.REGULAR ? cfg.regularHideCrosshair : cfg.cinematicHideCrosshair;
     }
 
     public static boolean shouldHideHands() {
-        if (!isZoomActive()) return false;
+        if (!currentAppliedMode.isActive()) return false;
         ZoomConfig cfg = ZoomConfig.INSTANCE;
         return currentAppliedMode == ZoomMode.REGULAR ? cfg.regularHideHands : cfg.cinematicHideHands;
     }

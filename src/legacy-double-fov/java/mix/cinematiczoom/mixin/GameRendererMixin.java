@@ -33,6 +33,7 @@ public class GameRendererMixin {
         ZoomManager.frameUpdate();
 
         double fov = cir.getReturnValue();
+        ZoomManager.setBaseFov(fov);
         double mul = ZoomManager.getCurrentFovMul();
         if (mul != 1.0) {
             double zoomed = fov * mul;

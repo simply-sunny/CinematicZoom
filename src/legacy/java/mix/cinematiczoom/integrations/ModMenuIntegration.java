@@ -150,6 +150,20 @@ public final class ModMenuIntegration implements ModMenuApi {
                   .build()
             );
 
+            cinematicCat.addEntry(
+                eb.startBooleanToggle(Text.translatable("cinematiczoom.option.magnetize"), cfg.cinematicMagnetize)
+                  .setTooltip(Text.translatable("cinematiczoom.option.magnetize.tooltip"))
+                  .setSaveConsumer(v -> cfg.cinematicMagnetize = v)
+                  .build()
+            );
+
+            cinematicCat.addEntry(
+                eb.startStrField(Text.translatable("cinematiczoom.option.snap_points"), cfg.cinematicSnapPoints)
+                  .setTooltip(Text.translatable("cinematiczoom.option.snap_points.tooltip"))
+                  .setSaveConsumer(v -> cfg.cinematicSnapPoints = v)
+                  .build()
+            );
+
             // 2. Regular Zoom Category
             ConfigCategory regularCat = builder.getOrCreateCategory(Text.translatable("cinematiczoom.config.category.regular"));
 
@@ -240,6 +254,20 @@ public final class ModMenuIntegration implements ModMenuApi {
                   .build()
             );
 
+            regularCat.addEntry(
+                eb.startBooleanToggle(Text.translatable("cinematiczoom.option.magnetize"), cfg.regularMagnetize)
+                  .setTooltip(Text.translatable("cinematiczoom.option.magnetize.tooltip"))
+                  .setSaveConsumer(v -> cfg.regularMagnetize = v)
+                  .build()
+            );
+
+            regularCat.addEntry(
+                eb.startStrField(Text.translatable("cinematiczoom.option.snap_points"), cfg.regularSnapPoints)
+                  .setTooltip(Text.translatable("cinematiczoom.option.snap_points.tooltip"))
+                  .setSaveConsumer(v -> cfg.regularSnapPoints = v)
+                  .build()
+            );
+
             // 3. General & Wheel Category
             ConfigCategory generalCat = builder.getOrCreateCategory(Text.translatable("cinematiczoom.config.category.general"));
 
@@ -266,10 +294,12 @@ public final class ModMenuIntegration implements ModMenuApi {
             );
 
             generalCat.addEntry(
-                eb.startFloatField(Text.translatable("cinematiczoom.option.max_zoom_multiplier"), cfg.maxZoomMultiplier)
-                  .setMin(1.0f).setMax(3.0f)
-                  .setTooltip(Text.translatable("cinematiczoom.option.max_zoom_multiplier.tooltip"))
-                  .setSaveConsumer(v -> cfg.maxZoomMultiplier = v)
+                eb.startBooleanToggle(Text.translatable("cinematiczoom.option.allow_ultrawide"), cfg.allowUltrawide)
+                  .setTooltip(Text.translatable("cinematiczoom.option.allow_ultrawide.tooltip"))
+                  .setSaveConsumer(v -> {
+                      cfg.allowUltrawide = v;
+                      cfg.maxZoomMultiplier = v ? 2.0f : 1.0f;
+                  })
                   .build()
             );
 

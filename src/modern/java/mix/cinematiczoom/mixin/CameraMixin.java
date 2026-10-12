@@ -15,6 +15,7 @@ public class CameraMixin {
         ZoomManager.frameUpdate();
 
         float fov = cir.getReturnValue();
+        ZoomManager.setBaseFov(fov);
         double mul = ZoomManager.getCurrentFovMul();
         if (mul != 1.0) {
             float zoomed = (float) (fov * mul);

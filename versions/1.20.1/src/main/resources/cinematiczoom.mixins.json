@@ -6,7 +6,8 @@
 	"client": [
 		"GameRendererMixin",
 		"MouseMixin",
-		"InGameHudMixin"
+		"InGameHudMixin",
+		"DebugHudMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

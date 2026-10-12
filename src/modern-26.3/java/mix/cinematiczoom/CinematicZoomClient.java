@@ -57,6 +57,9 @@ public final class CinematicZoomClient implements ClientModInitializer {
         getKeyMappings();
 
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> ZoomManager.reset(client));
-        ClientLifecycleEvents.CLIENT_STOPPING.register(ZoomManager::reset);
+        ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
+            ZoomManager.reset(client);
+            ZoomConfig.INSTANCE.save();
+        });
     }
 }

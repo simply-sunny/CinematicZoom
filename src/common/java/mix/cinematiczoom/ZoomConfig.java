@@ -33,11 +33,13 @@ public final class ZoomConfig {
     public ZoomCurve cinematicZoomOutCurve = ZoomCurve.EXPONENTIAL;
     public boolean cinematicHideHud = true;
     public boolean cinematicHideCrosshair = true;
-    public boolean cinematicHideHands = false;
+    public boolean cinematicHideHands = true;
     public boolean cinematicCamera = true;
     public boolean cinematicScaleSensitivity = true;
     public boolean cinematicRemoveBobbing = true;
     public boolean cinematicToggle = false;
+    public boolean cinematicMagnetize = false;
+    public String cinematicSnapPoints = "";
 
     // Regular Zoom Profile (No Bars)
     public float regularStartingZoom = 3.0f;
@@ -45,20 +47,23 @@ public final class ZoomConfig {
     public int regularZoomOutMs = 240;
     public ZoomCurve regularZoomInCurve = ZoomCurve.EXPONENTIAL;
     public ZoomCurve regularZoomOutCurve = ZoomCurve.EXPONENTIAL;
-    public boolean regularHideHud = false;
-    public boolean regularHideCrosshair = false;
-    public boolean regularHideHands = false;
+    public boolean regularHideHud = true;
+    public boolean regularHideCrosshair = true;
+    public boolean regularHideHands = true;
     public boolean regularCinematicCamera = false;
     public boolean regularScaleSensitivity = true;
     public boolean regularRemoveBobbing = true;
     public boolean regularToggle = false;
+    public boolean regularMagnetize = false;
+    public String regularSnapPoints = "";
 
     // Shared / Wheel Settings
     public boolean mouseWheelEnabled = true;
     public boolean discreteScroll = false;
     public float discreteScrollStep = 1.0f;
+    public boolean allowUltrawide = false;
     public float minZoomMultiplier = 1.0f / 30.0f;
-    public float maxZoomMultiplier = 2.0f;
+    public float maxZoomMultiplier = 1.0f;
     public float wheelStep = 0.05f;
 
     public void load() {
@@ -77,8 +82,22 @@ public final class ZoomConfig {
                         && loaded.minZoomMultiplier == 0.10f) {
                     loaded.minZoomMultiplier = 1.0f / 30.0f;
                 }
-                if (!json.has("maxZoomMultiplier") && loaded.maxZoomMultiplier <= 1.0f) {
-                    loaded.maxZoomMultiplier = 2.0f;
+                if (json.has("allowUltrawide")) {
+                    loaded.allowUltrawide = json.get("allowUltrawide").getAsBoolean();
+                } else if (json.has("maxZoomMultiplier")) {
+                    loaded.allowUltrawide = json.get("maxZoomMultiplier").getAsFloat() > 1.01f;
+                } else {
+                    loaded.allowUltrawide = false;
+                }
+                loaded.maxZoomMultiplier = loaded.allowUltrawide ? 2.0f : 1.0f;
+                if (!json.has("cinematicHideHands")) {
+                    loaded.cinematicHideHands = true;
+                }
+                if (!json.has("regularHideHud")) {
+                    loaded.regularHideHud = true;
+                }
+                if (!json.has("regularHideHands")) {
+                    loaded.regularHideHands = true;
                 }
                 if (!json.has("cinematicStartingZoom")) {
                     if (json.has("startingZoom")) {
@@ -158,13 +177,15 @@ public final class ZoomConfig {
         cinematicZoomOutMs = Math.max(0, cinematicZoomOutMs);
         if (cinematicZoomInCurve == null) cinematicZoomInCurve = ZoomCurve.EXPONENTIAL;
         if (cinematicZoomOutCurve == null) cinematicZoomOutCurve = ZoomCurve.EXPONENTIAL;
+        if (cinematicSnapPoints == null) cinematicSnapPoints = "";
 
         regularZoomInMs = Math.max(0, regularZoomInMs);
         regularZoomOutMs = Math.max(0, regularZoomOutMs);
         if (regularZoomInCurve == null) regularZoomInCurve = ZoomCurve.EXPONENTIAL;
         if (regularZoomOutCurve == null) regularZoomOutCurve = ZoomCurve.EXPONENTIAL;
+        if (regularSnapPoints == null) regularSnapPoints = "";
 
-        maxZoomMultiplier = Math.max(1.0f, Math.min(3.0f, maxZoomMultiplier));
+        maxZoomMultiplier = allowUltrawide ? 2.0f : 1.0f;
         minZoomMultiplier = Math.max(0.01f, Math.min(maxZoomMultiplier, minZoomMultiplier));
 
         float minStarting = 1.0f / maxZoomMultiplier;
@@ -196,6 +217,8 @@ public final class ZoomConfig {
         cinematicScaleSensitivity = other.cinematicScaleSensitivity;
         cinematicRemoveBobbing = other.cinematicRemoveBobbing;
         cinematicToggle = other.cinematicToggle;
+        cinematicMagnetize = other.cinematicMagnetize;
+        cinematicSnapPoints = other.cinematicSnapPoints;
 
         regularStartingZoom = other.regularStartingZoom;
         regularZoomInMs = other.regularZoomInMs;
@@ -209,10 +232,13 @@ public final class ZoomConfig {
         regularScaleSensitivity = other.regularScaleSensitivity;
         regularRemoveBobbing = other.regularRemoveBobbing;
         regularToggle = other.regularToggle;
+        regularMagnetize = other.regularMagnetize;
+        regularSnapPoints = other.regularSnapPoints;
 
         mouseWheelEnabled = other.mouseWheelEnabled;
         discreteScroll = other.discreteScroll;
         discreteScrollStep = other.discreteScrollStep;
+        allowUltrawide = other.allowUltrawide;
         minZoomMultiplier = other.minZoomMultiplier;
         maxZoomMultiplier = other.maxZoomMultiplier;
         wheelStep = other.wheelStep;

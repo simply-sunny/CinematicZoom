@@ -16,11 +16,4 @@ public class GameRendererMixin {
             ci.cancel();
         }
     }
-
-    @Inject(method = "renderItemInHand", at = @At("HEAD"), cancellable = true)
-    private void cinematiczoom$hideHands(CallbackInfo ci) {
-        if (ZoomManager.shouldHideHands()) {
-            ci.cancel();
-        }
-    }
 }

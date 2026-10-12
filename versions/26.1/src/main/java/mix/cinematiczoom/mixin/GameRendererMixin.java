@@ -19,13 +19,6 @@ public class GameRendererMixin {
         }
     }
 
-    @Inject(method = "renderItemInHand", at = @At("HEAD"), cancellable = true)
-    private void cinematiczoom$hideHands(CallbackInfo ci) {
-        if (ZoomManager.shouldHideHands()) {
-            ci.cancel();
-        }
-    }
-
     @ModifyVariable(method = "extractGui(Lnet/minecraft/client/DeltaTracker;ZZ)V", at = @At("STORE"), ordinal = 0)
     private GuiGraphicsExtractor cinematiczoom$drawBarsFirst(GuiGraphicsExtractor ctx) {
         ZoomManager.renderBars(ctx);
