@@ -68,6 +68,7 @@ final class ZoomController {
         animDurationMs = ZoomConfig.INSTANCE.cinematicZoomOutMs;
         animCurve = ZoomConfig.INSTANCE.cinematicZoomOutCurve;
         lastFrameNanos = 0L;
+        this.baseFov = 70.0;
     }
 
     void updateFrame() {
@@ -80,25 +81,11 @@ final class ZoomController {
         double deltaMs = Math.min((now - lastFrameNanos) * 1e-6, 50.0);
         lastFrameNanos = now;
 
-        if (animDurationMs <= 0) {
-            currentMultiplier = targetMultiplier;
-            currentBarsPercent = targetBarsPercent;
-            return;
-        }
-
         if (currentMultiplier == targetMultiplier && currentBarsPercent == targetBarsPercent) {
             return;
         }
 
-        animElapsedMs += deltaMs;
-        double progress = animDurationMs > 0 ? Math.min(1.0, animElapsedMs / animDurationMs) : 1.0;
-        double eased = animCurve != null ? animCurve.apply(progress) : progress;
-
-        currentMultiplier = (float) lerp(animStartMultiplier, targetMultiplier, eased);
-
-        if (progress < 1.0) {
-            currentBarsPercent = (float) lerp(animStartBarsPercent, targetBarsPercent, eased);
-        } else if (currentBarsPercent != targetBarsPercent) {
+        if (currentMultiplier == targetMultiplier) {
             if (ZoomConfig.INSTANCE.smoothBarChange) {
                 double factor = 1.0 - Math.exp(-deltaMs / 60.0);
                 currentBarsPercent = (float) (currentBarsPercent + (targetBarsPercent - currentBarsPercent) * factor);
@@ -108,12 +95,24 @@ final class ZoomController {
             } else {
                 currentBarsPercent = targetBarsPercent;
             }
+            return;
         }
+
+        if (animDurationMs <= 0) {
+            currentMultiplier = targetMultiplier;
+            currentBarsPercent = targetBarsPercent;
+            return;
+        }
+
+        animElapsedMs += deltaMs;
+        double progress = animDurationMs > 0 ? Math.min(1.0, animElapsedMs / animDurationMs) : 1.0;
+        double eased = animCurve != null ? animCurve.apply(progress) : progress;
+
+        currentMultiplier = (float) lerp(animStartMultiplier, targetMultiplier, eased);
+        currentBarsPercent = (float) lerp(animStartBarsPercent, targetBarsPercent, eased);
 
         if (progress >= 1.0 || Math.abs(currentMultiplier - targetMultiplier) < 1e-4f) {
             currentMultiplier = targetMultiplier;
-        }
-        if (progress >= 1.0 && Math.abs(currentBarsPercent - targetBarsPercent) < 1e-3f) {
             currentBarsPercent = targetBarsPercent;
         }
     }

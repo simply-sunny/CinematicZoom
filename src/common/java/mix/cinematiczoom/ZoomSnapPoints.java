@@ -54,6 +54,7 @@ public final class ZoomSnapPoints {
     }
 
     public static float stepBetweenSnaps(float current, List<Float> snaps, double vertical) {
+        if (vertical == 0.0 || Double.isNaN(vertical)) return current;
         if (snaps == null || snaps.isEmpty()) {
             return current;
         }

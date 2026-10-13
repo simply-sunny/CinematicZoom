@@ -17,10 +17,6 @@ public final class ZoomManager {
     private ZoomManager() {
     }
 
-    public static void tick(MinecraftClient client, KeyBinding cinematicKey, KeyBinding regularKey) {
-        tick(client, cinematicKey, regularKey, null, null);
-    }
-
     public static void tick(MinecraftClient client, KeyBinding cinematicKey, KeyBinding regularKey,
                             KeyBinding increaseBarsKey, KeyBinding decreaseBarsKey) {
         boolean inWorld = client.world != null && client.player != null;
@@ -132,6 +128,10 @@ public final class ZoomManager {
 
     public static double getBaseFov() {
         return ZOOM.getBaseFov();
+    }
+
+    public static float getCurrentBarsPercent() {
+        return ZOOM.currentBarsPercent();
     }
 
     public static boolean shouldHideHud() {

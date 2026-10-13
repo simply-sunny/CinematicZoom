@@ -150,7 +150,6 @@ subprojects {
 		}
 		if (target.renderTickCounter) {
 			javaDirectories << rootProject.file('src/legacy-render-tick-counter/java')
-			javaDirectories << rootProject.file('src/legacy-hud-option/java')
 			resourceDirectories << rootProject.file('src/legacy/resources')
 		}
 	} else {
@@ -205,12 +204,13 @@ subprojects {
 }
 
 // Headless checks use real common/manager code and only stub the game/loader boundary.
-def regressionProject = subprojects.first()
+def regressionProject = subprojects.find { it.name == '1.20.1' } ?: subprojects.first()
+def regressionJava = minecraftTargets[regressionProject.name]?.java ?: 17
 def compileRegressionTests = regressionProject.tasks.register('compileRegressionTests', JavaCompile) {
 	source rootProject.file('src/common/java'), rootProject.file('tests/java'), rootProject.file('src/modern-post-26.1/java/mix/cinematiczoom/ZoomManager.java')
 	classpath = regressionProject.configurations.compileClasspath
 	destinationDirectory = rootProject.layout.buildDirectory.dir('classes/regression')
-	options.release = 17
+	options.release = regressionJava
 }
 
 def regressionTest = regressionProject.tasks.register('regressionTest', JavaExec) {

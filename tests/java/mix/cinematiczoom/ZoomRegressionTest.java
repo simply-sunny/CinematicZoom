@@ -258,6 +258,10 @@ public final class ZoomRegressionTest {
 
             CFG.regularMagnetize = false;
             CFG.regularSnapPoints = "";
+            require(ZoomSnapPoints.stepBetweenSnaps(0.5f, java.util.List.of(0.2f, 0.5f), 0.0) == 0.5f,
+                    "zero vertical should not step snaps");
+            require(ZoomSnapPoints.stepBetweenSnaps(0.5f, java.util.List.of(0.2f, 0.5f), Double.NaN) == 0.5f,
+                    "NaN vertical should not step snaps");
         });
         run("default settings have hide hands on and regular hide hud and hands on", () -> {
             ZoomConfig fresh = new ZoomConfig();
@@ -328,15 +332,30 @@ public final class ZoomRegressionTest {
             near(CFG.cinematicBarsPercent, 15);
         });
         run("smoothBarChange animates while discrete snaps immediately", () -> {
-            CFG.cinematicZoomInMs = 240;
-            CFG.smoothBarChange = false;
             cinematic.down = true;
             tick();
             settle();
-            require(ZoomManager.adjustBars(2.0f), "adjustBars failed");
-            near(CFG.cinematicBarsPercent, 17);
-            CFG.cinematicZoomInMs = 0;
+            near(ZoomManager.getCurrentBarsPercent(), 15);
+
+            CFG.smoothBarChange = false;
+            require(ZoomManager.adjustBars(5.0f), "adjustBars failed");
+            near(ZoomManager.getCurrentBarsPercent(), 20);
+
             CFG.smoothBarChange = true;
+            require(ZoomManager.adjustBars(10.0f), "adjustBars failed");
+            near(ZoomManager.getCurrentBarsPercent(), 20);
+
+            Thread.sleep(20);
+            ZoomManager.frameUpdate();
+            float intermediate = ZoomManager.getCurrentBarsPercent();
+            require(intermediate > 20.0f && intermediate < 30.0f,
+                    "bars should animate smoothly between frames, got " + intermediate);
+
+            for (int i = 0; i < 40 && Math.abs(ZoomManager.getCurrentBarsPercent() - 30.0f) > 1e-3f; i++) {
+                Thread.sleep(15);
+                ZoomManager.frameUpdate();
+            }
+            near(ZoomManager.getCurrentBarsPercent(), 30);
         });
         run("arrow keys do nothing when zoom is inactive or in regular zoom", () -> {
             CFG.cinematicBarsPercent = 15;
@@ -410,6 +429,95 @@ public final class ZoomRegressionTest {
             settle();
             near(CFG.cinematicBarsPercent, 0);
         });
+        run("debug screen hiding contract tracks shouldHideHud across activate, toggle, and release", () -> {
+            CFG.cinematicHideHud = true;
+            CFG.regularHideHud = false;
+            require(!ZoomManager.shouldHideHud(), "inactive zoom must not hide debug screen");
+
+            cinematic.down = true;
+            tick();
+            require(ZoomManager.shouldHideHud(), "cinematic hold must hide debug screen");
+
+            cinematic.down = false;
+            tick();
+            require(!ZoomManager.shouldHideHud(), "release cinematic hold must restore debug screen");
+
+            regular.down = true;
+            tick();
+            require(!ZoomManager.shouldHideHud(), "regular zoom with regularHideHud false must not hide debug screen");
+            regular.down = false;
+            tick();
+
+            CFG.cinematicToggle = true;
+            cinematic.down = true;
+            tick();
+            cinematic.down = false;
+            tick();
+            require(ZoomManager.shouldHideHud(), "toggled cinematic zoom must keep debug screen hidden");
+
+            cinematic.down = true;
+            tick();
+            cinematic.down = false;
+            tick();
+            require(!ZoomManager.shouldHideHud(), "toggling off must restore debug screen");
+        });
+        run("ultrawide starting zoom under 1x activates and clamps properly", () -> {
+            CFG.allowUltrawide = true;
+            CFG.clamp();
+            CFG.cinematicStartingZoom = 0.5f;
+            CFG.clamp();
+            near(CFG.cinematicStartingZoom, 0.5);
+
+            cinematic.down = true;
+            tick();
+            settle();
+            near(ZoomManager.getCurrentFovMul(), 2.0);
+            require(ZoomManager.isZoomActive(), "ultrawide zoom should be active");
+
+            cinematic.down = false;
+            tick();
+            settle();
+            require(!ZoomManager.isZoomActive(), "zoom should release cleanly");
+        });
+        run("discrete scrolling steps across 1x ultrawide boundary", () -> {
+            CFG.allowUltrawide = true;
+            CFG.clamp();
+            CFG.discreteScroll = true;
+            CFG.discreteScrollStep = 0.5f;
+            CFG.cinematicStartingZoom = 0.5f;
+            CFG.clamp();
+
+            cinematic.down = true;
+            tick();
+            settle();
+            near(ZoomManager.getCurrentFovMul(), 2.0);
+
+            ZoomManager.onWheel(1);
+            settle();
+            near(ZoomManager.getCurrentFovMul(), 1.0);
+
+            ZoomManager.onWheel(1);
+            settle();
+            near(ZoomManager.getCurrentFovMul(), 1.0 / 1.5);
+
+            ZoomManager.onWheel(-1);
+            settle();
+            near(ZoomManager.getCurrentFovMul(), 1.0);
+
+            ZoomManager.onWheel(-1);
+            settle();
+            near(ZoomManager.getCurrentFovMul(), 2.0);
+
+            ZoomManager.onWheel(-1);
+            settle();
+            near(ZoomManager.getCurrentFovMul(), 2.0);
+        });
+        run("legacy baseZoomMultiplier config migration", () -> {
+            load("{\"baseZoomMultiplier\":0.33}");
+            near(CFG.cinematicStartingZoom, 3.0);
+            load("{\"baseZoomMultiplier\":0.2}");
+            near(CFG.cinematicStartingZoom, 5.0);
+        });
         if (failures != 0) {
             throw new AssertionError(failures + " of " + checks + " regression checks failed");
         }
@@ -467,7 +575,7 @@ public final class ZoomRegressionTest {
         try {
             check.run();
             System.out.println("PASS: " + name);
-        } catch (AssertionError error) {
+        } catch (Throwable error) {
             failures++;
             System.err.println("FAIL: " + name + " — " + error.getMessage());
         }
