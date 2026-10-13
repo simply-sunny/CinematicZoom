@@ -270,6 +270,7 @@ public final class ZoomRegressionTest {
             require(fresh.regularHideHud, "regular hide hud should default to true");
             require(fresh.regularHideHands, "regular hide hands should default to true");
             require(!fresh.allowUltrawide, "allow ultrawide should default to false");
+            require(!fresh.preserveBarAdjustment, "preserve bar adjustment should default to false");
             require(!fresh.cinematicMagnetize, "cinematic magnetize should default to false");
             require(!fresh.regularMagnetize, "regular magnetize should default to false");
             near(fresh.maxZoomMultiplier, 1.0);
@@ -288,6 +289,7 @@ public final class ZoomRegressionTest {
         });
         run("arrow keys adjust bar size when zoomed in", () -> {
             CFG.cinematicBarsPercent = 15;
+            CFG.preserveBarAdjustment = true;
             cinematic.down = true;
             tick();
             settle();
@@ -304,6 +306,7 @@ public final class ZoomRegressionTest {
         });
         run("arrow keys step by custom barAdjustStep", () -> {
             CFG.cinematicBarsPercent = 15;
+            CFG.preserveBarAdjustment = true;
             CFG.barAdjustStep = 2.5f;
             cinematic.down = true;
             tick();
@@ -315,6 +318,17 @@ public final class ZoomRegressionTest {
         });
         run("preserveBarAdjustment toggles config persistence", () -> {
             CFG.cinematicBarsPercent = 15;
+            CFG.preserveBarAdjustment = true;
+            cinematic.down = true;
+            tick();
+            settle();
+            barsUp.down = true;
+            tick();
+            settle();
+            near(CFG.cinematicBarsPercent, 16);
+            cinematic.down = false;
+            tick();
+            settle();
             CFG.preserveBarAdjustment = false;
             cinematic.down = true;
             tick();
@@ -322,14 +336,7 @@ public final class ZoomRegressionTest {
             barsUp.down = true;
             tick();
             settle();
-            near(CFG.cinematicBarsPercent, 15);
-            cinematic.down = false;
-            tick();
-            settle();
-            cinematic.down = true;
-            tick();
-            settle();
-            near(CFG.cinematicBarsPercent, 15);
+            near(CFG.cinematicBarsPercent, 16);
         });
         run("smoothBarChange animates while discrete snaps immediately", () -> {
             cinematic.down = true;
@@ -403,10 +410,11 @@ public final class ZoomRegressionTest {
             barsUp.down = true;
             tick();
             settle();
-            near(CFG.cinematicBarsPercent, 15);
+            near(ZoomManager.getCurrentBarsPercent(), 15);
         });
         run("bar size adjustment stays clamped between 0 and 50", () -> {
             CFG.cinematicBarsPercent = 49.8f;
+            CFG.preserveBarAdjustment = true;
             cinematic.down = true;
             tick();
             settle();

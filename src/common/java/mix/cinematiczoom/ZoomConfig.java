@@ -26,7 +26,7 @@ public final class ZoomConfig {
     public boolean arrowKeysAdjustBars = true;
     public float barAdjustStep = 1.0f;
     public boolean smoothBarChange = true;
-    public boolean preserveBarAdjustment = true;
+    public boolean preserveBarAdjustment = false;
     public int cinematicZoomInMs = 240;
     public int cinematicZoomOutMs = 240;
     public ZoomCurve cinematicZoomInCurve = ZoomCurve.EXPONENTIAL;
